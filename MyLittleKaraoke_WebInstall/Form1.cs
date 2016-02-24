@@ -23,15 +23,24 @@ namespace MyLittleKaraoke_WebInstall
     public partial class Form1 : Form
     {
         public string legacy;
+        private HelperClass cHelper = new HelperClass();
         public Form1()
         {
-            InitializeComponent();
-            // We determine if the user run Windows XP as path aren't the same.
-            OSInfo osInfo = new OSInfo();
-            string OS = String.Format("{0}", osInfo.GetOSName);
-            string wxp = "Windows XP";
-            if (OS.Equals(wxp)) { legacy = "1"; }
-            else { legacy = "0"; }
+            try
+            {
+                InitializeComponent();
+                throw new FileNotFoundException("errormessage");
+                // We determine if the user run Windows XP as path aren't the same.
+                OSInfo osInfo = new OSInfo();
+                string OS = String.Format("{0}", osInfo.GetOSName);
+                string wxp = "Windows XP";
+                if (OS.Equals(wxp)) { legacy = "1"; }
+                else { legacy = "0"; }
+            }
+            catch (Exception ex)
+            {
+                cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "MyLittleKaraoke_WebInstall.Form1");
+            }
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -43,20 +52,26 @@ namespace MyLittleKaraoke_WebInstall
 
         private void button1_Click(object sender, EventArgs e)
         {
-            // Create a new instance of FolderBrowserDialog.
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            // A new folder button will display in FolderBrowserDialog.
-            folderBrowserDialog.ShowNewFolderButton = true;
-            //Show FolderBrowserDialog
-            DialogResult dlgResult = folderBrowserDialog.ShowDialog();
-            if (dlgResult.Equals(DialogResult.OK))
+            try
+            {// Create a new instance of FolderBrowserDialog.
+                FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+                // A new folder button will display in FolderBrowserDialog.
+                folderBrowserDialog.ShowNewFolderButton = true;
+                //Show FolderBrowserDialog
+                DialogResult dlgResult = folderBrowserDialog.ShowDialog();
+                if (dlgResult.Equals(DialogResult.OK))
+                {
+                    //Send content to string
+                    string path = folderBrowserDialog.SelectedPath;
+                    //Show selected folder path in textbox1.
+                    textBox1.Text = folderBrowserDialog.SelectedPath;
+                    //Browsing start from root folder.
+                    Environment.SpecialFolder rootFolder = folderBrowserDialog.RootFolder;
+                }
+            }
+            catch (Exception ex)
             {
-                //Send content to string
-                string path = folderBrowserDialog.SelectedPath;
-                //Show selected folder path in textbox1.
-                textBox1.Text = folderBrowserDialog.SelectedPath;
-                //Browsing start from root folder.
-                Environment.SpecialFolder rootFolder = folderBrowserDialog.RootFolder;
+                cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "BrowseInstallerLocationButton_Click");
             }
         }
 
