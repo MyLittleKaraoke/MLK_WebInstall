@@ -31,7 +31,7 @@ namespace MyLittleKaraoke_WebInstall
             {
                 InitializeComponent();
                 throw new FileNotFoundException("errormessage");
-                // We determine if the user run Windows XP as path aren't the same.
+                // We determine if the user run Windows XP as path for configurations aren't the same.
                 OSInfo osInfo = new OSInfo();
                 string OS = String.Format("{0}", osInfo.GetOSName);
                 string wxp = "Windows XP";
@@ -114,6 +114,7 @@ namespace MyLittleKaraoke_WebInstall
 
 
 
+        // We calculate and display Progress and Speed.
         public void ProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             progressBar1.Value = e.ProgressPercentage;
@@ -125,6 +126,7 @@ namespace MyLittleKaraoke_WebInstall
             label7.Text = downloadsize + " at " + downloadspeed;
         }
 
+        //We make sure the connection is still active, by comparing the value of "Downloaded" (see ProgressChanged) with Downloaded 2 that we update only if the download is still active
         public void CheckTimeout(object source, object e)
         {
             if (Canard != null && Downloaded == Downloaded2) { Canard.CancelAsync(); }
@@ -137,10 +139,15 @@ namespace MyLittleKaraoke_WebInstall
             String Server = textBox2.Text;
             Timeout = new System.Windows.Forms.Timer();
             FileDL = "base1.tar.mlk";
+            // TIMER - Launch code to check if download is still active every 30 seconds)
             Timeout.Tick += new EventHandler(CheckTimeout);
             Timeout.Interval = 30000;
             Timeout.Start();
+            // TIMER - End.
+            //
+            // If the file exist, we go to the next one.
             if (File.Exists(TempPath + @"\base1.tar.mlk")) { DL2(null, null); }
+            // If the file doesn't exist or has been detected as incorrect and deleted, we QUACK a copy!
             else
             {
                 Canard = new WebClient();
@@ -150,6 +157,7 @@ namespace MyLittleKaraoke_WebInstall
                 progressBar2.Value = 0;
                 label8.Text = "Part 1 of 22";
             }
+            //We start the stopwatch to calculate progress.
             sw.Start();
             //System.Windows.Forms.Timer Timeout = new System.Windows.Forms.Timer();
 
@@ -157,10 +165,13 @@ namespace MyLittleKaraoke_WebInstall
 
         public void DL2(object sender, AsyncCompletedEventArgs e)
         {
+            //We stop the stopwatch.
             sw.Stop();
             //string GenByte = MD5.MD5.GetChecksum(TempPath + @"\\" + FileDL, MD5.MD5.Algorithms.MD5);
+            //We check if size is similar to the one preset earlier in the code
             FileDL = "base1.tar.mlk";
             string GenByte = new System.IO.FileInfo(TempPath + @"\" + FileDL).Length.ToString();
+            //if it match, then we download the next file!
             if (ByteBase1.Equals(GenByte))
             {
                 String Server = textBox2.Text;
@@ -176,6 +187,7 @@ namespace MyLittleKaraoke_WebInstall
                     label8.Text = "Part 2 of 22";
                 }
             }
+            //Else, we ask the user if he want to redownload or cancel
             else {
                 // Delete the file if it exist.
                 if (File.Exists(TempPath + @"\" + FileDL)) { File.Delete(TempPath + @"\" + FileDL); }
@@ -1001,11 +1013,13 @@ namespace MyLittleKaraoke_WebInstall
             sw.Stop();
             FileDL = "theme1.mlt";
             string GenByte = new System.IO.FileInfo(TempPath + @"\" + FileDL).Length.ToString();
+            // IF the download matched, we edit the UI for the installation and we launch the install thread!
             if (ByteBase22.Equals(GenByte))
             {
                 progressBar1.Value = 100;
                 progressBar2.Value = 100;
                 label7.Text = " ";
+                label6.Text = " ";
                 label8.Text = "Download finished!";
                 this.Height = 370;
                 //thread = new ThreadStart(WorkThreadFunction);
@@ -1247,6 +1261,7 @@ namespace MyLittleKaraoke_WebInstall
             Registry.SetValue(@"HKEY_LOCAL_MACHINE\Software\Classes\.mlk", null, "derpymuffinsfactory.mlk.v1");
             Registry.LocalMachine.CreateSubKey(@"SOFTWARE\\DerpyMuffinsFactory");
             Registry.LocalMachine.OpenSubKey("SOFTWARE\\DerpyMuffinsFactory", true).SetValue("MLK Path", (string)textBox1.Text + "\\", Microsoft.Win32.RegistryValueKind.String);
+            status = "Installation is done!";
 
 
         }

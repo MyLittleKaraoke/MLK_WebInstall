@@ -7,3 +7,12 @@ c:\users\yaymuffins\documents\visual studio 2015\Projects\MyLittleKaraoke_WebIns
 c:\users\yaymuffins\documents\visual studio 2015\Projects\MyLittleKaraoke_WebInstall\MyLittleKaraoke_WebInstall\obj\Debug\MyLittleKaraoke_WebInstall.exe
 c:\users\yaymuffins\documents\visual studio 2015\Projects\MyLittleKaraoke_WebInstall\MyLittleKaraoke_WebInstall\obj\Debug\MyLittleKaraoke_WebInstall.pdb
 C:\Users\YayMuffins\Documents\Visual Studio 2015\Projects\MyLittleKaraoke_WebInstall\MyLittleKaraoke_WebInstall\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\YayMuffins\Documents\GitHub\MLK_WebInstall\MyLittleKaraoke_WebInstall\obj\Debug\MyLittleKaraoke_WebInstall.exe
+C:\Users\YayMuffins\Documents\GitHub\MLK_WebInstall\MyLittleKaraoke_WebInstall\obj\Debug\MyLittleKaraoke_WebInstall.pdb
+C:\Users\YayMuffins\Documents\GitHub\MLK_WebInstall\MyLittleKaraoke_WebInstall\bin\Debug\MyLittleKaraoke_WebInstall.exe
+C:\Users\YayMuffins\Documents\GitHub\MLK_WebInstall\MyLittleKaraoke_WebInstall\bin\Debug\MyLittleKaraoke_WebInstall.pdb
+C:\Users\YayMuffins\Documents\GitHub\MLK_WebInstall\MyLittleKaraoke_WebInstall\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\YayMuffins\Documents\GitHub\MLK_WebInstall\MyLittleKaraoke_WebInstall\obj\Debug\MyLittleKaraoke_WebInstall.csprojResolveAssemblyReference.cache
+C:\Users\YayMuffins\Documents\GitHub\MLK_WebInstall\MyLittleKaraoke_WebInstall\obj\Debug\MyLittleKaraoke_WebInstall.Form1.resources
+C:\Users\YayMuffins\Documents\GitHub\MLK_WebInstall\MyLittleKaraoke_WebInstall\obj\Debug\MyLittleKaraoke_WebInstall.Properties.Resources.resources
+C:\Users\YayMuffins\Documents\GitHub\MLK_WebInstall\MyLittleKaraoke_WebInstall\obj\Debug\MyLittleKaraoke_WebInstall.csproj.GenerateResource.Cache
