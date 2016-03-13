@@ -22,6 +22,7 @@ namespace MyLittleKaraoke_WebInstall
 {
     public partial class Form1 : Form
     {
+        private Uri WebFileList = new Uri("https://yp.coco-pommel.org/mlk-web-test/windows.webinst");
         public string legacy;
         private HelperClass cHelper = new HelperClass();
         public Form1()
@@ -130,7 +131,7 @@ namespace MyLittleKaraoke_WebInstall
             else { Downloaded2 = Downloaded; }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e) //this is the Download&Install button
         {
             this.Height = 450;
             String Server = textBox2.Text;
