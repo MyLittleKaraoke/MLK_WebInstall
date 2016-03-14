@@ -1,9 +1,0 @@
-C:\Users\YayMuffins\Documents\Visual Studio 2015\Projects\MyLittleKaraoke_WebInstall\MyLittleKaraoke_WebInstall\bin\Release\MyLittleKaraoke_WebInstall.exe
-C:\Users\YayMuffins\Documents\Visual Studio 2015\Projects\MyLittleKaraoke_WebInstall\MyLittleKaraoke_WebInstall\bin\Release\MyLittleKaraoke_WebInstall.pdb
-C:\Users\YayMuffins\Documents\Visual Studio 2015\Projects\MyLittleKaraoke_WebInstall\MyLittleKaraoke_WebInstall\bin\Release\ICSharpCode.SharpZipLib.dll
-C:\Users\YayMuffins\Documents\Visual Studio 2015\Projects\MyLittleKaraoke_WebInstall\MyLittleKaraoke_WebInstall\obj\Release\MyLittleKaraoke_WebInstall.Form1.resources
-C:\Users\YayMuffins\Documents\Visual Studio 2015\Projects\MyLittleKaraoke_WebInstall\MyLittleKaraoke_WebInstall\obj\Release\MyLittleKaraoke_WebInstall.Properties.Resources.resources
-C:\Users\YayMuffins\Documents\Visual Studio 2015\Projects\MyLittleKaraoke_WebInstall\MyLittleKaraoke_WebInstall\obj\Release\MyLittleKaraoke_WebInstall.csproj.GenerateResource.Cache
-C:\Users\YayMuffins\Documents\Visual Studio 2015\Projects\MyLittleKaraoke_WebInstall\MyLittleKaraoke_WebInstall\obj\Release\MyLittleKaraoke_WebInstall.exe
-C:\Users\YayMuffins\Documents\Visual Studio 2015\Projects\MyLittleKaraoke_WebInstall\MyLittleKaraoke_WebInstall\obj\Release\MyLittleKaraoke_WebInstall.pdb
-C:\Users\YayMuffins\Documents\Visual Studio 2015\Projects\MyLittleKaraoke_WebInstall\MyLittleKaraoke_WebInstall\obj\Release\MyLittleKaraoke_WebInstall.csprojResolveAssemblyReference.cache

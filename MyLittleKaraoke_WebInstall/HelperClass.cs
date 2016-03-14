@@ -32,12 +32,14 @@ namespace MyLittleKaraoke_WebInstall
             string[,] FileTableNx2 = new string[WebPageContentLines.Length / 2, 2];
             for (int i = 0; i < WebPageContentLines.Length -1; i++)
             {
-                FileTableNx2[i / 2, i % 2] = WebPageContentLines[i];
+                try {
+                    FileTableNx2[i / 2, i % 2] = WebPageContentLines[i]; }
+                catch (Exception) { ;}
             }
             return FileTableNx2;
         }
 
-        public string GetWebPageContent(string PageURL)
+        private string GetWebPageContent(string PageURL)
         {
             try
             {
