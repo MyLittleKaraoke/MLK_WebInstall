@@ -5,6 +5,8 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Threading;
+using System.Security;
+using System.Security.Principal;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
