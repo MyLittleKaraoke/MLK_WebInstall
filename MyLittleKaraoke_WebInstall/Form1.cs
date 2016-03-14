@@ -230,5 +230,21 @@ namespace MyLittleKaraoke_WebInstall
         {
             this.progressBar1.Value = barvalue;
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            if (cHelper.IsAdministrator() == false)
+            {
+                // Restart program and run as admin
+                var exeName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                ProcessStartInfo startInfo = new ProcessStartInfo(exeName);
+                startInfo.Verb = "runas";
+                System.Diagnostics.Process.Start(startInfo);
+                Application.Exit();
+                return;
+            }
+
+
+        }
     }
 }

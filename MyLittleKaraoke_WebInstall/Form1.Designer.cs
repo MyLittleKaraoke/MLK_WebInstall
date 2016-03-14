@@ -233,6 +233,7 @@
             this.MinimumSize = new System.Drawing.Size(780, 300);
             this.Name = "Form1";
             this.Text = "My Little Karaoke - Web Installer";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
