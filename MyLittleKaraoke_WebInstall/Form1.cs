@@ -23,16 +23,18 @@ namespace MyLittleKaraoke_WebInstall
     public partial class Form1 : Form
     {
         private Uri WebFileList = new Uri("https://yp.coco-pommel.org/mlk-web-test/windows.webinst");
+        private string[,] FileAddressList;
+        private int sucessfullyDownloadedCount = 0;
         public string legacy;
         private HelperClass cHelper = new HelperClass();
         private string Downloaded;
         private string Downloaded2;
         private string status;
         private int barvalue;
-        private string TempPath = "downloads";
+        private string TempPath = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", String.Empty).ToString();
         delegate void SetTextCallback(string status);
         delegate void SetValueCallback(int barvalue);
-        private string FileDL;
+        private string CurrentFileDLName;
         private WebClient Canard;
         private System.Windows.Forms.Timer Timeout;
         Stopwatch sw = new Stopwatch();
@@ -42,7 +44,6 @@ namespace MyLittleKaraoke_WebInstall
             try
             {
                 InitializeComponent();
-                throw new FileNotFoundException("errormessage");
                 // We determine if the user run Windows XP as path for configurations aren't the same.
                 OSInfo osInfo = new OSInfo();
                 string OS = String.Format("{0}", osInfo.GetOSName);
@@ -77,7 +78,7 @@ namespace MyLittleKaraoke_WebInstall
                     //Send content to string
                     string path = folderBrowserDialog.SelectedPath;
                     //Show selected folder path in textbox1.
-                    textBox1.Text = folderBrowserDialog.SelectedPath;
+                    TextBoxInstallPath.Text = folderBrowserDialog.SelectedPath;
                     //Browsing start from root folder.
                     Environment.SpecialFolder rootFolder = folderBrowserDialog.RootFolder;
                 }
@@ -108,204 +109,113 @@ namespace MyLittleKaraoke_WebInstall
             else { Downloaded2 = Downloaded; }
         }
 
-        private void button2_Click(object sender, EventArgs e) //this is the Download&Install button
+        private void DownloadAndInstallButton_Click(object sender, EventArgs e)
         {
-            this.Height = 450;
-            String Server = textBox2.Text;
-            Timeout = new System.Windows.Forms.Timer();
-            FileDL = "base1.tar.mlk";
-            // TIMER - Launch code to check if download is still active every 30 seconds)
-            Timeout.Tick += new EventHandler(CheckTimeout);
-            Timeout.Interval = 30000;
-            Timeout.Start();
-            // TIMER - End.
-            //
-            // If the file exist, we go to the next one.
-            if (File.Exists(TempPath + @"\base1.tar.mlk")) { DL2(null, null); }
-            // If the file doesn't exist or has been detected as incorrect and deleted, we QUACK a copy!
-            else
+            try
             {
-                Canard = new WebClient();
-                Canard.DownloadFileCompleted += new AsyncCompletedEventHandler(DL2);
-                Canard.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
-                Canard.DownloadFileAsync(new Uri(Server + FileDL), TempPath + @"\" + FileDL);
-                progressBar2.Value = 0;
-                label8.Text = "Part 1 of 22";
+                this.Height = 450;
+                String Server = textBox2.Text;
+                Timeout = new System.Windows.Forms.Timer();
+                Application.DoEvents();
+                // TIMER - Launch code to check if download is still active every 30 seconds)
+                Timeout.Tick += new EventHandler(CheckTimeout);
+                Timeout.Interval = 30000;
+                Timeout.Start();
+                // TIMER - End.
+                FileAddressList = cHelper.GetFileAddressesListFromWeb(WebFileList);
+                DownloadFiles(null, null);
             }
-            //We start the stopwatch to calculate progress.
-            sw.Start();
-            //System.Windows.Forms.Timer Timeout = new System.Windows.Forms.Timer();
+            catch (Exception ex)
+            {
+                cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "Form1.DownloadAndInstallButton_Click");
+            }
 
         }
 
-        public void DL2(object sender, AsyncCompletedEventArgs e)
+        public void DownloadFiles(object sender, AsyncCompletedEventArgs e)
         {
             //We stop the stopwatch.
             sw.Stop();
-            //string GenByte = MD5.MD5.GetChecksum(TempPath + @"\\" + FileDL, MD5.MD5.Algorithms.MD5);
-            //We check if size is similar to the one preset earlier in the code
-            FileDL = "base1.tar.mlk";
-            string GenByte = new System.IO.FileInfo(TempPath + @"\" + FileDL).Length.ToString();
-            //if it match, then we download the next file!
-            if (ByteBase1.Equals(GenByte))
+            for (int intCurrFile = sucessfullyDownloadedCount; intCurrFile < FileAddressList.GetLength(0) - 1; intCurrFile++)
             {
-                String Server = textBox2.Text;
-                Timeout.Start();
-                FileDL = "base2.tar.mlk";
-                if (File.Exists(TempPath + @"\" + FileDL)) { DL3(null, null); }
-                else {
+                CurrentFileDLName = Path.GetFileName((new Uri(FileAddressList[intCurrFile, 0])).AbsolutePath);
+                label8.Text = "Part " + (intCurrFile + 1) + " of " + FileAddressList.GetLength(0);
+                if (File.Exists(TempPath + @"\" + CurrentFileDLName))
+                {
+                    string GenByte = new System.IO.FileInfo(TempPath + @"\" + CurrentFileDLName).Length.ToString();
+                    //if it match, then we download the next file!
+                    if (FileAddressList[intCurrFile, 1].Equals(GenByte) == false)
+                    {
+                        // Delete the file if it exist.
+                        if (File.Exists(TempPath + @"\" + CurrentFileDLName)) { File.Delete(TempPath + @"\" + CurrentFileDLName); }
+                        // Ask user to redownload or cancel.
+                        DialogResult dialogResult = MessageBox.Show("the downloaded file " + CurrentFileDLName + " is corrupted. Do you want to retry downloading?", "File verification FAILED", MessageBoxButtons.YesNo);
+                        if (dialogResult == DialogResult.Yes)
+                        {
+                            Downloaded = null;
+                            Downloaded2 = null;
+                            GenByte = null;
+                            Timeout.Stop();
+                            DownloadAndInstallButton_Click(null, null);
+                            break;
+                        }
+                        else if (dialogResult == DialogResult.No)
+                        {
+                            cHelper.ShowErrorMessageDialog("User aborted after corruped file downloads. Closing application now.", "", "");
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        sucessfullyDownloadedCount = Math.Max(sucessfullyDownloadedCount, (intCurrFile+1));
+                    }
+                }
+                // If the file doesn't exist or has been detected as incorrect and deleted, we QUACK a copy!
+                else
+                {
                     Canard = new WebClient();
-                    Canard.DownloadFileCompleted += new AsyncCompletedEventHandler(DL3);
+                    Canard.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadFiles);
                     Canard.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
-                    Canard.DownloadFileAsync(new Uri(Server + FileDL), TempPath + @"\" + FileDL);
-                    progressBar2.Value = 5;
-                    label8.Text = "Part 2 of 22";
+                    Canard.DownloadFileAsync(new Uri(FileAddressList[intCurrFile, 0]), TempPath + @"\" + CurrentFileDLName);
+                    progressBar2.Value = 0;
+                    break;
                 }
-            }
-            //Else, we ask the user if he want to redownload or cancel
-            else {
-                // Delete the file if it exist.
-                if (File.Exists(TempPath + @"\" + FileDL)) { File.Delete(TempPath + @"\" + FileDL); }
-                // Ask user to redownload or cancel.
-                DialogResult dialogResult = MessageBox.Show(FileDL + " is corrupted, retry downloading?", "File verification FAILED", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
+                if (sucessfullyDownloadedCount == FileAddressList.GetLength(0))
                 {
-                    Downloaded = null;
-                    Downloaded2 = null;
-                    GenByte = null;
-                    Timeout.Stop();
-                    button2_Click(null, null);
+                    //all files are now successfully downloaded.
+                    InstallationFunctionThread();
                 }
-                else if (dialogResult == DialogResult.No)
-                {
-                    //here be poni
-                }
+                //We start the stopwatch to calculate progress.
+                sw.Start();
+
+
             }
         }
 
-        public void DL3(object sender, AsyncCompletedEventArgs e)
+        public void InstallationFunctionThread()
         {
-            sw.Stop();
-            FileDL = "base2.tar.mlk";
-            string GenByte = new System.IO.FileInfo(TempPath + @"\" + FileDL).Length.ToString();
-            if (ByteBase2.Equals(GenByte))
+            for (int intCurrFile = 0; intCurrFile < FileAddressList.GetLength(0) - 1; intCurrFile++)
             {
-                String Server = textBox2.Text;
-                Timeout.Start();
-                FileDL = "base3.tar.mlk";
-                if (File.Exists(TempPath + @"\" + FileDL)) { DL4(null, null); }
-                else {
-                    Canard = new WebClient();
-                    Canard.DownloadFileCompleted += new AsyncCompletedEventHandler(DL4);
-                    Canard.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
-                    Canard.DownloadFileAsync(new Uri(Server + FileDL), TempPath + @"\" + FileDL);
-                    progressBar2.Value = 10;
-                    label8.Text = "Part 3 of 22";
-                }
+                barvalue = ( 100 * intCurrFile ) / FileAddressList.GetLength(0);
+                status = "Installation (" + (intCurrFile+1) + " of " + FileAddressList.GetLength(0) + ")";
+                if (this.label5.InvokeRequired) { SetTextCallback d = new SetTextCallback(SetText); this.Invoke(d, new object[] { status }); }
+                if (this.progressBar1.InvokeRequired) { SetValueCallback d = new SetValueCallback(SetValue); this.Invoke(d, new object[] { barvalue }); }
+                Stream inStream21 = File.OpenRead(TempPath + @"\usdx1.mlu");
+                TarArchive tarArchive21 = TarArchive.CreateInputTarArchive(inStream21);
+                tarArchive21.ExtractContents(TextBoxInstallPath.Text);
+                tarArchive21.Close();
+                inStream21.Close();
             }
-            else {
-                // Delete the file if it exist.
-                if (File.Exists(TempPath + @"\" + FileDL)) { File.Delete(TempPath + @"\" + FileDL); }
-                // Ask user to redownload or cancel.
-                DialogResult dialogResult = MessageBox.Show(FileDL + " is corrupted, retry downloading?", "File verification FAILED", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    Downloaded = null;
-                    Downloaded2 = null;
-                    GenByte = null;
-                    Timeout.Stop();
-                    DL2(null, null);
-                }
-                else if (dialogResult == DialogResult.No)
-                {
-                    //here be poni
-                }
-            }
-        }
-
-
-        public void Over(object sender, AsyncCompletedEventArgs e)
-        {
-            sw.Stop();
-            FileDL = "theme1.mlt";
-            string GenByte = new System.IO.FileInfo(TempPath + @"\" + FileDL).Length.ToString();
-            // IF the download matched, we edit the UI for the installation and we launch the install thread!
-            if (ByteBase22.Equals(GenByte))
-            {
-                progressBar1.Value = 100;
-                progressBar2.Value = 100;
-                label7.Text = " ";
-                label6.Text = " ";
-                label8.Text = "Download finished!";
-                this.Height = 370;
-                //thread = new ThreadStart(WorkThreadFunction);
-                Thread thread = new Thread(new ThreadStart(WorkThreadFunction));
-                thread.Start();
-        }
-    
-            else {
-                // Delete the file if it exist.
-                if (File.Exists(TempPath + @"\" + FileDL)) { File.Delete(TempPath + @"\" + FileDL); }
-                // Ask user to redownload or cancel.
-                DialogResult dialogResult = MessageBox.Show(FileDL + " is corrupted, retry downloading?", "File verification FAILED", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    Downloaded = null;
-                    Downloaded2 = null;
-                    GenByte = null;
-                    Timeout.Stop();
-                    DL22(null, null);
-                }
-                else if (dialogResult == DialogResult.No)
-                {
-                    //here be poni
-                }
-            }
-        }
-
-        public void WorkThreadFunction()
-        {
-            status = "Installation (1 of 22)";
-            barvalue = 1;
-            if (this.label5.InvokeRequired) { SetTextCallback d = new SetTextCallback(SetText); this.Invoke(d, new object[] { status }); }
-            if (this.progressBar1.InvokeRequired) { SetValueCallback d = new SetValueCallback(SetValue); this.Invoke(d, new object[] { barvalue }); }
-            Stream inStream21 = File.OpenRead(TempPath + @"\usdx1.mlu");
-            TarArchive tarArchive21 = TarArchive.CreateInputTarArchive(inStream21);
-            tarArchive21.ExtractContents(textBox1.Text);
-            tarArchive21.Close();
-            inStream21.Close();
-            status = "Installation (2 of 22)";
-            barvalue = 2;
-            if (this.label5.InvokeRequired) { SetTextCallback d = new SetTextCallback(SetText); this.Invoke(d, new object[] { status }); }
-            if (this.progressBar1.InvokeRequired) { SetValueCallback d = new SetValueCallback(SetValue); this.Invoke(d, new object[] { barvalue }); }
-            Stream inStream22 = File.OpenRead(TempPath + @"\theme1.mlt");
-            TarArchive tarArchive22 = TarArchive.CreateInputTarArchive(inStream22);
-            tarArchive22.ExtractContents(textBox1.Text);
-            tarArchive22.Close();
-            inStream22.Close();
             
-            barvalue = 99;
-            if (this.label5.InvokeRequired) { SetTextCallback d = new SetTextCallback(SetText); this.Invoke(d, new object[] { status }); }
-            if (this.progressBar1.InvokeRequired) { SetValueCallback d = new SetValueCallback(SetValue); this.Invoke(d, new object[] { barvalue }); }
-            Stream inStream20 = File.OpenRead(TempPath + @"\base20.tar.mlk");
-            TarArchive tarArchive20 = TarArchive.CreateInputTarArchive(inStream20);
-            tarArchive20.ExtractContents(textBox1.Text + @"\songs");
-            tarArchive20.Close();
-            inStream20.Close();
             status = "Installation (Registering component)";
             barvalue = 100;
             if (this.label5.InvokeRequired) { SetTextCallback d = new SetTextCallback(SetText); this.Invoke(d, new object[] { status }); }
             if (this.progressBar1.InvokeRequired) { SetValueCallback d = new SetValueCallback(SetValue); this.Invoke(d, new object[] { barvalue }); }
-            string regkey = "\"" + textBox1.Text + "\\" + "MLKHelperGUI.exe" + "\" " + "\"%1\"";
-            Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\derpymuffinsfactory.mlk.v1");
-            Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\derpymuffinsfactory.mlk.v1\shell");
-            Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\derpymuffinsfactory.mlk.v1\shell\open");
-            Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\derpymuffinsfactory.mlk.v1\shell\open\command");
-            Registry.SetValue(@"HKEY_LOCAL_MACHINE\Software\Classes\derpymuffinsfactory.mlk.v1\shell\open\command", null, regkey);
-            Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\.mlk");
-            Registry.SetValue(@"HKEY_LOCAL_MACHINE\Software\Classes\.mlk", null, "derpymuffinsfactory.mlk.v1");
-            Registry.LocalMachine.CreateSubKey(@"SOFTWARE\\DerpyMuffinsFactory");
-            Registry.LocalMachine.OpenSubKey("SOFTWARE\\DerpyMuffinsFactory", true).SetValue("MLK Path", (string)textBox1.Text + "\\", Microsoft.Win32.RegistryValueKind.String);
+            if (cHelper.SetInstallLocationInRegistryKey(TextBoxInstallPath.Text) == false)
+            {
+                MessageBox.Show("Installation was successfull but setting the installation path setting failed.", "Setting registry key failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
             status = "Installation is done!";
 
 

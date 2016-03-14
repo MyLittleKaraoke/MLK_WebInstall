@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace MyLittleKaraoke_WebInstall
 {
@@ -52,6 +54,30 @@ namespace MyLittleKaraoke_WebInstall
             {
                 return "";
             }
+        }
+
+        public Boolean SetInstallLocationInRegistryKey(string InstallPath)
+        {
+            try
+            {
+                string regkey = "\"" + InstallPath + "\\" + "MLKHelperGUI.exe" + "\" " + "\"%1\"";
+                Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\derpymuffinsfactory.mlk.v1");
+                Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\derpymuffinsfactory.mlk.v1\shell");
+                Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\derpymuffinsfactory.mlk.v1\shell\open");
+                Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\derpymuffinsfactory.mlk.v1\shell\open\command");
+                Registry.SetValue(@"HKEY_LOCAL_MACHINE\Software\Classes\derpymuffinsfactory.mlk.v1\shell\open\command", null, regkey);
+                Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\.mlk");
+                Registry.SetValue(@"HKEY_LOCAL_MACHINE\Software\Classes\.mlk", null, "derpymuffinsfactory.mlk.v1");
+                Registry.LocalMachine.CreateSubKey(@"SOFTWARE\\DerpyMuffinsFactory");
+                Registry.LocalMachine.OpenSubKey("SOFTWARE\\DerpyMuffinsFactory", true).SetValue("MLK Path", (string)InstallPath + "\\", Microsoft.Win32.RegistryValueKind.String);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //ShowErrorMessageDialog(ex.Message, ex.StackTrace, "HelperClass.SetInstallLocationInRegistryKey(string InstallPath)");
+                return false;
+            }
+            
         }
     }
 }

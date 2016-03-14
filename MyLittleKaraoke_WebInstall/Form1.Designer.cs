@@ -33,10 +33,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.TextBoxInstallPath = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
+            this.DownloadAndInstallButton = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.progressBar2 = new System.Windows.Forms.ProgressBar();
             this.label5 = new System.Windows.Forms.Label();
@@ -85,13 +85,13 @@
             this.label3.TabIndex = 3;
             this.label3.Text = "Where do you want to install My Little Karaoke:";
             // 
-            // textBox1
+            // TextBoxInstallPath
             // 
-            this.textBox1.Location = new System.Drawing.Point(15, 177);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(656, 20);
-            this.textBox1.TabIndex = 4;
-            this.textBox1.Text = "C:\\Program Files\\My Little Karaoke";
+            this.TextBoxInstallPath.Location = new System.Drawing.Point(15, 177);
+            this.TextBoxInstallPath.Name = "TextBoxInstallPath";
+            this.TextBoxInstallPath.Size = new System.Drawing.Size(656, 20);
+            this.TextBoxInstallPath.TabIndex = 4;
+            this.TextBoxInstallPath.Text = "C:\\Program Files\\My Little Karaoke";
             // 
             // button1
             // 
@@ -114,15 +114,15 @@
     " only the last part.";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // button2
+            // DownloadAndInstallButton
             // 
-            this.button2.Location = new System.Drawing.Point(615, 211);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(137, 33);
-            this.button2.TabIndex = 7;
-            this.button2.Text = "Download and Install";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.DownloadAndInstallButton.Location = new System.Drawing.Point(615, 211);
+            this.DownloadAndInstallButton.Name = "DownloadAndInstallButton";
+            this.DownloadAndInstallButton.Size = new System.Drawing.Size(137, 33);
+            this.DownloadAndInstallButton.TabIndex = 7;
+            this.DownloadAndInstallButton.Text = "Download and Install";
+            this.DownloadAndInstallButton.UseVisualStyleBackColor = true;
+            this.DownloadAndInstallButton.Click += new System.EventHandler(this.DownloadAndInstallButton_Click);
             // 
             // progressBar1
             // 
@@ -216,10 +216,10 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.progressBar2);
             this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.DownloadAndInstallButton);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.TextBoxInstallPath);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -245,10 +245,10 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox TextBoxInstallPath;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button DownloadAndInstallButton;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.ProgressBar progressBar2;
         private System.Windows.Forms.Label label5;
