@@ -136,88 +136,104 @@ namespace MyLittleKaraoke_WebInstall
         {
             //We stop the stopwatch.
             sw.Stop();
-            for (int intCurrFile = sucessfullyDownloadedCount; intCurrFile < FileAddressList.GetLength(0) - 1; intCurrFile++)
+            try
             {
-                CurrentFileDLName = Path.GetFileName((new Uri(FileAddressList[intCurrFile, 0])).AbsolutePath);
-                label8.Text = "Part " + (intCurrFile + 1) + " of " + FileAddressList.GetLength(0);
-                if (File.Exists(TempPath + @"\" + CurrentFileDLName))
+                for (int intCurrFile = sucessfullyDownloadedCount; intCurrFile < FileAddressList.GetLength(0); intCurrFile++)
                 {
-                    string GenByte = new System.IO.FileInfo(TempPath + @"\" + CurrentFileDLName).Length.ToString();
-                    //if it match, then we download the next file!
-                    if (FileAddressList[intCurrFile, 1].Equals(GenByte) == false)
+                    CurrentFileDLName = Path.GetFileName((new Uri(FileAddressList[intCurrFile, 0])).AbsolutePath);
+                    label8.Text = "Part " + (intCurrFile + 1) + " of " + FileAddressList.GetLength(0);
+                    if (File.Exists(TempPath + @"\" + CurrentFileDLName))
                     {
-                        // Delete the file if it exist.
-                        if (File.Exists(TempPath + @"\" + CurrentFileDLName)) { File.Delete(TempPath + @"\" + CurrentFileDLName); }
-                        // Ask user to redownload or cancel.
-                        DialogResult dialogResult = MessageBox.Show("the downloaded file " + CurrentFileDLName + " is corrupted. Do you want to retry downloading?", "File verification FAILED", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
+                        string GenByte = new System.IO.FileInfo(TempPath + @"\" + CurrentFileDLName).Length.ToString();
+                        //if it match, then we download the next file!
+                        if (FileAddressList[intCurrFile, 1].Equals(GenByte) == false)
                         {
-                            Downloaded = null;
-                            Downloaded2 = null;
-                            GenByte = null;
-                            Timeout.Stop();
-                            DownloadAndInstallButton_Click(null, null);
-                            break;
+                            // Delete the file if it exist.
+                            if (File.Exists(TempPath + @"\" + CurrentFileDLName)) { File.Delete(TempPath + @"\" + CurrentFileDLName); }
+                            // Ask user to redownload or cancel.
+                            DialogResult dialogResult = MessageBox.Show("the downloaded file " + CurrentFileDLName + " is corrupted. Do you want to retry downloading?", "File verification FAILED", MessageBoxButtons.YesNo);
+                            if (dialogResult == DialogResult.Yes)
+                            {
+                                Downloaded = null;
+                                Downloaded2 = null;
+                                GenByte = null;
+                                Timeout.Stop();
+                                DownloadAndInstallButton_Click(null, null);
+                                break;
+                            }
+                            else if (dialogResult == DialogResult.No)
+                            {
+                                cHelper.ShowErrorMessageDialog("User aborted after corruped file downloads. Closing application now.", "", "");
+                                break;
+                            }
                         }
-                        else if (dialogResult == DialogResult.No)
+                        else
                         {
-                            cHelper.ShowErrorMessageDialog("User aborted after corruped file downloads. Closing application now.", "", "");
-                            break;
+                            sucessfullyDownloadedCount = Math.Max(sucessfullyDownloadedCount, (intCurrFile+1));
                         }
                     }
+                    // If the file doesn't exist or has been detected as incorrect and deleted, we QUACK a copy!
                     else
                     {
-                        sucessfullyDownloadedCount = Math.Max(sucessfullyDownloadedCount, (intCurrFile+1));
+                        Canard = new WebClient();
+                        Canard.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadFiles);
+                        Canard.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
+                        Canard.DownloadFileAsync(new Uri(FileAddressList[intCurrFile, 0]), TempPath + @"\" + CurrentFileDLName);
+                        progressBar2.Value = 0;
+                        break;
                     }
+                    if (sucessfullyDownloadedCount == FileAddressList.GetLength(0))
+                    {
+                        //all files are now successfully downloaded.
+                        InstallationFunctionThread();
+                    }
+                    //We start the stopwatch to calculate progress.
+                    sw.Start();
                 }
-                // If the file doesn't exist or has been detected as incorrect and deleted, we QUACK a copy!
-                else
-                {
-                    Canard = new WebClient();
-                    Canard.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadFiles);
-                    Canard.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
-                    Canard.DownloadFileAsync(new Uri(FileAddressList[intCurrFile, 0]), TempPath + @"\" + CurrentFileDLName);
-                    progressBar2.Value = 0;
-                    break;
-                }
-                if (sucessfullyDownloadedCount == FileAddressList.GetLength(0))
-                {
-                    //all files are now successfully downloaded.
-                    InstallationFunctionThread();
-                }
-                //We start the stopwatch to calculate progress.
-                sw.Start();
-
-
+            }
+            catch (Exception ex)
+            {
+                cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "DownloadFiles");
             }
         }
 
         public void InstallationFunctionThread()
         {
-            for (int intCurrFile = 0; intCurrFile < FileAddressList.GetLength(0) - 1; intCurrFile++)
+            try
             {
-                barvalue = ( 100 * intCurrFile ) / FileAddressList.GetLength(0);
-                status = "Installation (" + (intCurrFile+1) + " of " + FileAddressList.GetLength(0) + ")";
+                for (int intCurrFile = 0; intCurrFile < FileAddressList.GetLength(0); intCurrFile++)
+                {
+                    barvalue = ( 100 * intCurrFile ) / FileAddressList.GetLength(0);
+                    CurrentFileDLName = Path.GetFileName((new Uri(FileAddressList[intCurrFile, 0])).AbsolutePath);
+                    status = "Installation (" + (intCurrFile+1) + " of " + FileAddressList.GetLength(0) + ")";
+                    if (this.label5.InvokeRequired) { SetTextCallback d = new SetTextCallback(SetText); this.Invoke(d, new object[] { status }); }
+                    if (this.progressBar1.InvokeRequired) { SetValueCallback d = new SetValueCallback(SetValue); this.Invoke(d, new object[] { barvalue }); }
+                    Stream inStream21 = File.OpenRead(TempPath + @"\" + CurrentFileDLName);
+                    TarArchive tarArchive21 = TarArchive.CreateInputTarArchive(inStream21);
+                    tarArchive21.ExtractContents(TextBoxInstallPath.Text);
+                    tarArchive21.Close();
+                    inStream21.Close();
+                }
+            
+                status = "Installation (Registering component)";
+                barvalue = 100;
                 if (this.label5.InvokeRequired) { SetTextCallback d = new SetTextCallback(SetText); this.Invoke(d, new object[] { status }); }
                 if (this.progressBar1.InvokeRequired) { SetValueCallback d = new SetValueCallback(SetValue); this.Invoke(d, new object[] { barvalue }); }
-                Stream inStream21 = File.OpenRead(TempPath + @"\usdx1.mlu");
-                TarArchive tarArchive21 = TarArchive.CreateInputTarArchive(inStream21);
-                tarArchive21.ExtractContents(TextBoxInstallPath.Text);
-                tarArchive21.Close();
-                inStream21.Close();
+                if (cHelper.SetInstallLocationInRegistryKey(TextBoxInstallPath.Text) == false)
+                {
+                    MessageBox.Show("Installation was successfull but setting the installation path setting failed.", "Setting registry key failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
+                status = "Installation is done!";
             }
-            
-            status = "Installation (Registering component)";
-            barvalue = 100;
-            if (this.label5.InvokeRequired) { SetTextCallback d = new SetTextCallback(SetText); this.Invoke(d, new object[] { status }); }
-            if (this.progressBar1.InvokeRequired) { SetValueCallback d = new SetValueCallback(SetValue); this.Invoke(d, new object[] { barvalue }); }
-            if (cHelper.SetInstallLocationInRegistryKey(TextBoxInstallPath.Text) == false)
+            catch (Exception ex)
             {
                 MessageBox.Show("Installation was successfull but setting the installation path setting failed.", "Setting registry key failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             status = "Installation is done!";
 
+            MessageBox.Show("Sing!");
 
         }
 

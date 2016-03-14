@@ -32,10 +32,12 @@ namespace MyLittleKaraoke_WebInstall
         {
             string[] WebPageContentLines = GetWebPageContent(UpdaterFileAddressUrl.OriginalString).Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
             string[,] FileTableNx2 = new string[WebPageContentLines.Length / 2, 2];
-            for (int i = 0; i < WebPageContentLines.Length -1; i++)
+            for (int i = 0; i < WebPageContentLines.Length -1; i++) //-1 because of the linux-typical line-break at file-end
             {
-                try {
-                    FileTableNx2[i / 2, i % 2] = WebPageContentLines[i]; }
+                try 
+                {
+                    FileTableNx2[i / 2, i % 2] = WebPageContentLines[i];
+                }
                 catch (Exception) { ;}
             }
             return FileTableNx2;
@@ -50,9 +52,15 @@ namespace MyLittleKaraoke_WebInstall
                 StreamReader Reader = new StreamReader(Response.GetResponseStream());
                 return Reader.ReadToEnd();
             }
-            catch (Exception)
+            catch (WebException ex)
             {
-                return "";
+                var statusCode = ((HttpWebResponse)ex.Response).StatusCode;
+                ShowErrorMessageDialog("Downloading the filelist from web failed!", "Webserver returned status code: " + statusCode, "GetWebPageContent(string PageURL)");
+                return "An error occurred, status code: " + statusCode;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
