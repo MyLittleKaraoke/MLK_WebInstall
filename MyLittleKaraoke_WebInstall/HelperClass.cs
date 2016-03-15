@@ -96,5 +96,45 @@ namespace MyLittleKaraoke_WebInstall
             WindowsPrincipal principal = new WindowsPrincipal(identity);
             return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
+
+        public bool IsMlkSimAC3(string InstallPath)
+        {
+            try
+            {
+                return File.ReadAllLines(InstallPath + @"\songs\version.txt").First().Contains("5.0 Final");
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public void SetWritePermissionForLoggedInUsers(string FolderPath)
+        {
+            try
+            {
+                // This gets the "Authenticated Users" group, no matter what it's called
+                SecurityIdentifier sid = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
+
+                // Create the rules
+                FileSystemAccessRule writerule = new FileSystemAccessRule(sid, FileSystemRights.Write, AccessControlType.Allow);
+
+                if (!string.IsNullOrEmpty(FolderPath) && Directory.Exists(FolderPath))
+                {
+                    // Get your file's ACL
+                    DirectorySecurity fsecurity = Directory.GetAccessControl(FolderPath);
+
+                    // Add the new rule to the ACL
+                    fsecurity.AddAccessRule(writerule);
+
+                    // Set the ACL back to the file
+                    Directory.SetAccessControl(FolderPath, fsecurity);
+                }
+            }
+            catch (Exception)
+            {
+                ;
+            }
+        }
     }
 }
