@@ -113,6 +113,7 @@ namespace MyLittleKaraoke_WebInstall
         {
             try
             {
+                DownloadAndInstallButton.Enabled = false;
                 this.Height = 450;
                 String Server = textBox2.Text;
                 Timeout = new System.Windows.Forms.Timer();
