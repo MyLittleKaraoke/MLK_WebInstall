@@ -178,5 +178,19 @@ namespace MyLittleKaraoke_WebInstall
         static extern bool SHGetSpecialFolderPath(IntPtr hwndOwner,
            [Out] StringBuilder lpszPath, int nFolder, bool fCreate);
         const int CSIDL_COMMON_STARTMENU = 0x16;  // All Users\Start Menu
+        
+        public static bool IsDVDInstallation()
+        {
+            try
+            {
+                string location = Assembly.GetEntryAssembly().Location;
+                var info = new DriveInfo(Path.GetPathRoot(location));
+                return info.DriveType == DriveType.CDRom;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
