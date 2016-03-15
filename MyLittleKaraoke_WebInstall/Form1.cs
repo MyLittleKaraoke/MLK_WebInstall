@@ -22,7 +22,7 @@ namespace MyLittleKaraoke_WebInstall
 {
     public partial class Form1 : Form
     {
-        private Uri WebFileList = new Uri("https://yp.coco-pommel.org/mlk-web-test/windows.webinst");
+        private Uri WebFileList = new Uri("https://yp.coco-pommel.org/mlk-web-test/rdwindows.webinst");
         private string[,] FileAddressList;
         private int sucessfullyDownloadedCount = 0;
         public string legacy;
@@ -123,6 +123,7 @@ namespace MyLittleKaraoke_WebInstall
                 Timeout.Interval = 30000;
                 Timeout.Start();
                 // TIMER - End.
+                PrepareForSetup();
                 FileAddressList = cHelper.GetFileAddressesListFromWeb(WebFileList);
                 DownloadFiles(null, null);
             }
@@ -131,6 +132,33 @@ namespace MyLittleKaraoke_WebInstall
                 cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "Form1.DownloadAndInstallButton_Click");
             }
 
+        }
+
+        private void PrepareForSetup()
+        {
+            try
+            {
+                if (TextBoxInstallPath.Text.EndsWith(@"\"))
+                {
+                    TextBoxInstallPath.Text = TextBoxInstallPath.Text.Remove(TextBoxInstallPath.Text.Length-1);
+                }
+                if (Directory.Exists(TextBoxInstallPath.Text))
+                {
+                    if (Directory.Exists(TextBoxInstallPath + @"\songs") == false)
+                    {
+                        Directory.CreateDirectory(TextBoxInstallPath.Text + @"\songs");
+                    };
+                }
+                else
+                {
+                    Directory.CreateDirectory(TextBoxInstallPath.Text);
+                }
+                cHelper.SetWritePermissionForLoggedInUsers(TextBoxInstallPath.Text);
+            }
+            catch (Exception ex)
+            {
+                cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "PrepareForSetup()");
+            }
         }
 
         public void DownloadFiles(object sender, AsyncCompletedEventArgs e)
@@ -224,17 +252,17 @@ namespace MyLittleKaraoke_WebInstall
                 {
                     MessageBox.Show("Installation was successfull but setting the installation path setting failed.", "Setting registry key failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-
+                cHelper.CreateShortCut(Path.Combine(TextBoxInstallPath.Text, "MLK Instruction Manual.pdf"), "My Little Karaoke Instruction Manual");
+                cHelper.CreateShortCut(Path.Combine(TextBoxInstallPath.Text, "My Little Karaoke Launcher.exe"), "My Little Karaoke - Singing is Magic");
                 status = "Installation is done!";
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Installation was successfull but setting the installation path setting failed.", "Setting registry key failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "InstallationFunctionThread");
             }
 
             status = "Installation is done!";
-
-            MessageBox.Show("Sing!");
+            MessageBox.Show("Installation of MyLittleKaraoke was successfull! Have fun!");
 
         }
 
@@ -250,25 +278,30 @@ namespace MyLittleKaraoke_WebInstall
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (cHelper.IsAdministrator() == false)
+            try
             {
-                // Restart program and run as admin
-                var exeName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-                ProcessStartInfo startInfo = new ProcessStartInfo(exeName);
-                startInfo.Verb = "runas";
-                System.Diagnostics.Process.Start(startInfo);
-                Application.Exit();
-                return;
+                if (cHelper.IsAdministrator() == false)
+                {
+                    // Restart program and run as admin
+                    var exeName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                    ProcessStartInfo startInfo = new ProcessStartInfo(exeName);
+                    startInfo.Verb = "runas";
+                    System.Diagnostics.Process.Start(startInfo);
+                    Application.Exit();
+                }
+                if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+                {
+                    TextBoxInstallPath.Text = Environment.GetEnvironmentVariable("ProgramFiles(x86)") + @"\My Little Karaoke";
+                }
+                else
+                {
+                    TextBoxInstallPath.Text = Environment.GetEnvironmentVariable("ProgramFiles") + @"\My Little Karaoke";
+                }
             }
-            if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+            catch (Exception ex)
             {
-                TextBoxInstallPath.Text = Environment.GetEnvironmentVariable("ProgramFiles(x86)") + @"\My Little Karaoke";
+                cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "Form1_Load");
             }
-            else
-            {
-                TextBoxInstallPath.Text = Environment.GetEnvironmentVariable("ProgramFiles") + @"\My Little Karaoke";
-            }
-
         }
     }
 }

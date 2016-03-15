@@ -5,10 +5,14 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Threading;
-using System.Security;
+using System.Security.Permissions;
+using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Windows.Forms;
+using Microsoft.VisualBasic;
 using Microsoft.Win32;
+using IWshRuntimeLibrary;
+using System.Runtime.InteropServices;
 
 namespace MyLittleKaraoke_WebInstall
 {
@@ -101,7 +105,7 @@ namespace MyLittleKaraoke_WebInstall
         {
             try
             {
-                return File.ReadAllLines(InstallPath + @"\songs\version.txt").First().Contains("5.0 Final");
+                return System.IO.File.ReadAllLines(InstallPath + @"\songs\version.txt").First().Contains("5.0 Final");
             }
             catch (Exception)
             {
@@ -136,5 +140,38 @@ namespace MyLittleKaraoke_WebInstall
                 ;
             }
         }
+
+        public void CreateShortCut(string ShortCutTarget, string ShortCutName)
+        {
+
+            try
+            {
+                StringBuilder path = new StringBuilder(260);
+                SHGetSpecialFolderPath(IntPtr.Zero, path, CSIDL_COMMON_STARTMENU, false);
+                string commonStartMenuPath = path.ToString();
+                string appStartMenuPath = Path.Combine(Path.Combine(Path.Combine(commonStartMenuPath, "Programs"), "Derpy Muffins Test Factory"),"My Little Karaoke - Singing is Magic");
+
+                if (!Directory.Exists(appStartMenuPath))
+                    Directory.CreateDirectory(appStartMenuPath);
+
+                string shortcutLocation = Path.Combine(appStartMenuPath, ShortCutName + ".lnk");
+                WshShell shell = new WshShell();
+                IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutLocation);
+
+                shortcut.Description = ShortCutName;
+                //shortcut.IconLocation = @"C:\Program Files (x86)\TestApp\TestApp.ico"; //uncomment to set the icon of the shortcut
+                shortcut.TargetPath = ShortCutTarget;
+                shortcut.Save(); 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Was not able to create shortcuts in Windows startmenu. " + Environment.NewLine + ex.Message, "Error creating shortcuts.", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        [DllImport("shell32.dll")]
+        static extern bool SHGetSpecialFolderPath(IntPtr hwndOwner,
+           [Out] StringBuilder lpszPath, int nFolder, bool fCreate);
+        const int CSIDL_COMMON_STARTMENU = 0x16;  // All Users\Start Menu
     }
 }
