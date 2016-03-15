@@ -260,7 +260,14 @@ namespace MyLittleKaraoke_WebInstall
                 Application.Exit();
                 return;
             }
-
+            if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+            {
+                TextBoxInstallPath.Text = Environment.GetEnvironmentVariable("ProgramFiles(x86)") + @"\My Little Karaoke";
+            }
+            else
+            {
+                TextBoxInstallPath.Text = Environment.GetEnvironmentVariable("ProgramFiles") + @"\My Little Karaoke";
+            }
 
         }
     }
