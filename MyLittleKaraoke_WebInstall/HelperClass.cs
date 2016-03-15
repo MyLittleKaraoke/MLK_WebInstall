@@ -118,10 +118,14 @@ namespace MyLittleKaraoke_WebInstall
             try
             {
                 // This gets the "Authenticated Users" group, no matter what it's called
-                SecurityIdentifier sid = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
+                IdentityReference everybodyIdentity = new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
 
-                // Create the rules
-                FileSystemAccessRule writerule = new FileSystemAccessRule(sid, FileSystemRights.Write, AccessControlType.Allow);
+                FileSystemAccessRule writerule = new FileSystemAccessRule(
+                    everybodyIdentity,
+                    FileSystemRights.Modify,
+                    InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit,
+                    PropagationFlags.None,
+                    AccessControlType.Allow);
 
                 if (!string.IsNullOrEmpty(FolderPath) && Directory.Exists(FolderPath))
                 {
@@ -133,11 +137,12 @@ namespace MyLittleKaraoke_WebInstall
 
                     // Set the ACL back to the file
                     Directory.SetAccessControl(FolderPath, fsecurity);
+
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ;
+                ShowErrorMessageDialog(ex.Message, ex.StackTrace, "SetWritePermissionForLoggedInUsers(string FolderPath)");
             }
         }
 
