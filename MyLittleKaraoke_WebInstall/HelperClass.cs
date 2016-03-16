@@ -94,6 +94,18 @@ namespace MyLittleKaraoke_WebInstall
             
         }
 
+        public string GetInstallLocationfromRegistryKey()
+        {
+            try
+            {
+                return Registry.LocalMachine.OpenSubKey("SOFTWARE\\DerpyMuffinsFactory", true).getValue("MLK Path");;
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
+        }
+
         public bool IsAdministrator()
         {
             WindowsIdentity identity = WindowsIdentity.GetCurrent();
@@ -146,7 +158,7 @@ namespace MyLittleKaraoke_WebInstall
             }
         }
 
-        public void CreateShortCut(string ShortCutTarget, string ShortCutName)
+        public void CreateStartmenuShortcut(string ShortCutTarget, string ShortCutName)
         {
 
             try
@@ -179,11 +191,11 @@ namespace MyLittleKaraoke_WebInstall
            [Out] StringBuilder lpszPath, int nFolder, bool fCreate);
         const int CSIDL_COMMON_STARTMENU = 0x16;  // All Users\Start Menu
         
-        public static bool IsDVDInstallation()
+        public bool IsDVDInstallation()
         {
             try
             {
-                string location = Assembly.GetEntryAssembly().Location;
+                string location = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
                 var info = new DriveInfo(Path.GetPathRoot(location));
                 return info.DriveType == DriveType.CDRom;
             }
