@@ -46,6 +46,9 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
+            this.InstalledVersionLabel = new System.Windows.Forms.Label();
+            this.InstalledPackageLabel = new System.Windows.Forms.Label();
+            this.ActionNextLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -120,7 +123,7 @@
             this.DownloadAndInstallButton.Name = "DownloadAndInstallButton";
             this.DownloadAndInstallButton.Size = new System.Drawing.Size(137, 33);
             this.DownloadAndInstallButton.TabIndex = 7;
-            this.DownloadAndInstallButton.Text = "Download and Install";
+            this.DownloadAndInstallButton.Text = "Install the Game!";
             this.DownloadAndInstallButton.UseVisualStyleBackColor = true;
             this.DownloadAndInstallButton.Click += new System.EventHandler(this.DownloadAndInstallButton_Click);
             // 
@@ -203,11 +206,48 @@
             this.textBox2.TabIndex = 17;
             this.textBox2.Text = "http://192.168.9.1/virtualbox/mlkdev/";
             // 
+            // InstalledVersionLabel
+            // 
+            this.InstalledVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.InstalledVersionLabel.Location = new System.Drawing.Point(455, 109);
+            this.InstalledVersionLabel.Name = "InstalledVersionLabel";
+            this.InstalledVersionLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.InstalledVersionLabel.Size = new System.Drawing.Size(297, 13);
+            this.InstalledVersionLabel.TabIndex = 18;
+            this.InstalledVersionLabel.Text = "Installed version: unknown";
+            this.InstalledVersionLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // InstalledPackageLabel
+            // 
+            this.InstalledPackageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.InstalledPackageLabel.Location = new System.Drawing.Point(455, 122);
+            this.InstalledPackageLabel.Name = "InstalledPackageLabel";
+            this.InstalledPackageLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.InstalledPackageLabel.Size = new System.Drawing.Size(297, 13);
+            this.InstalledPackageLabel.TabIndex = 19;
+            this.InstalledPackageLabel.Text = "- here extra package information -";
+            this.InstalledPackageLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // ActionNextLabel
+            // 
+            this.ActionNextLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ActionNextLabel.Location = new System.Drawing.Point(455, 135);
+            this.ActionNextLabel.Name = "ActionNextLabel";
+            this.ActionNextLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.ActionNextLabel.Size = new System.Drawing.Size(297, 13);
+            this.ActionNextLabel.TabIndex = 20;
+            this.ActionNextLabel.Text = "Action: unknown";
+            this.ActionNextLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // Form1
             // 
+            this.AcceptButton = this.DownloadAndInstallButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(764, 261);
+            this.Controls.Add(this.ActionNextLabel);
+            this.Controls.Add(this.InstalledPackageLabel);
+            this.Controls.Add(this.InstalledVersionLabel);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label6);
@@ -259,6 +299,9 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Label InstalledVersionLabel;
+        private System.Windows.Forms.Label InstalledPackageLabel;
+        private System.Windows.Forms.Label ActionNextLabel;
     }
 }
 

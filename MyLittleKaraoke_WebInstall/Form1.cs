@@ -24,9 +24,13 @@ namespace MyLittleKaraoke_WebInstall
     {
         private Uri WebFileList = new Uri("https://yp.coco-pommel.org/mlk-web-test/rdwindows.webinst");
         private string[,] FileAddressList;
+        private string InstallFolderPath = "";
+        private string InstalledVersion = "none";
+        private string InstalledPackage = "none";
         private int sucessfullyDownloadedCount = 0;
         public string legacy;
         private HelperClass cHelper = new HelperClass();
+        private VersionStuff cVersion = new VersionStuff();
         private string Downloaded;
         private string Downloaded2;
         private string status;
@@ -71,6 +75,8 @@ namespace MyLittleKaraoke_WebInstall
                 FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
                 // A new folder button will display in FolderBrowserDialog.
                 folderBrowserDialog.ShowNewFolderButton = true;
+                try {folderBrowserDialog.SelectedPath = TextBoxInstallPath.Text;}
+                catch (Exception) { ;};
                 //Show FolderBrowserDialog
                 DialogResult dlgResult = folderBrowserDialog.ShowDialog();
                 if (dlgResult.Equals(DialogResult.OK))
@@ -79,8 +85,10 @@ namespace MyLittleKaraoke_WebInstall
                     string path = folderBrowserDialog.SelectedPath;
                     //Show selected folder path in textbox1.
                     TextBoxInstallPath.Text = folderBrowserDialog.SelectedPath;
+                    InstallFolderPath = TextBoxInstallPath.Text; 
                     //Browsing start from root folder.
                     Environment.SpecialFolder rootFolder = folderBrowserDialog.RootFolder;
+                    RefreshInitialization();
                 }
             }
             catch (Exception ex)
@@ -131,29 +139,31 @@ namespace MyLittleKaraoke_WebInstall
             {
                 cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "Form1.DownloadAndInstallButton_Click");
             }
-
         }
 
         private void PrepareForSetup()
         {
             try
             {
-                if (TextBoxInstallPath.Text.EndsWith(@"\"))
+                if (ActionNextLabel.Text == "Action: uninstall, but keep songs, then install updates")
+                    cHelper.Run_MLK_SIM4_Uninstaller(InstallFolderPath);
+                else if (ActionNextLabel.Text == "Action: uninstall + new installation")
                 {
-                    TextBoxInstallPath.Text = TextBoxInstallPath.Text.Remove(TextBoxInstallPath.Text.Length-1);
-                }
-                if (Directory.Exists(TextBoxInstallPath.Text))
+                    cHelper.Run_Old_Uninstaller();
+                };
+
+                if (Directory.Exists(InstallFolderPath))
                 {
-                    if (Directory.Exists(TextBoxInstallPath + @"\songs") == false)
+                    if (Directory.Exists(Path.Combine(InstallFolderPath, "songs")) == false)
                     {
-                        Directory.CreateDirectory(TextBoxInstallPath.Text + @"\songs");
+                        Directory.CreateDirectory(Path.Combine(InstallFolderPath,"songs"));
                     };
                 }
                 else
                 {
-                    Directory.CreateDirectory(TextBoxInstallPath.Text);
+                    Directory.CreateDirectory(InstallFolderPath);
                 }
-                cHelper.SetWritePermissionForLoggedInUsers(TextBoxInstallPath.Text);
+                cHelper.SetWritePermissionForLoggedInUsers(InstallFolderPath);
             }
             catch (Exception ex)
             {
@@ -292,21 +302,44 @@ namespace MyLittleKaraoke_WebInstall
                 String InstLocation = cHelper.GetInstallLocationfromRegistryKey();
                 if (InstLocation.Equals(null) == false)
                 {
-                    TextBoxInstallPath.Text = InstLocation;
+                    InstallFolderPath = InstLocation;
                 }
                 else if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
                 {
-                    TextBoxInstallPath.Text = Environment.GetEnvironmentVariable("ProgramFiles(x86)") + @"\My Little Karaoke";
+                    InstallFolderPath = Environment.GetEnvironmentVariable("ProgramFiles(x86)") + @"\My Little Karaoke";
                 }
                 else
                 {
-                    TextBoxInstallPath.Text = Environment.GetEnvironmentVariable("ProgramFiles") + @"\My Little Karaoke";
-                }
+                    InstallFolderPath = Environment.GetEnvironmentVariable("ProgramFiles") + @"\My Little Karaoke";
+                };
+                TextBoxInstallPath.Text = InstallFolderPath;
+                RefreshInitialization();
             }
             catch (Exception ex)
             {
                 cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "Form1_Load");
             }
+        }
+
+        private void RefreshInitialization()
+        {
+            //Get installed Version
+            InstalledVersion = cVersion.GetSongVersion(InstallFolderPath);
+            InstalledPackage = cVersion.GetPackageVersion(InstallFolderPath);
+            if (InstalledVersion.Equals("none") == true)
+                ActionNextLabel.Text = "Action: new installation";
+            else if (InstalledPackage.Equals("none") == false)
+                ActionNextLabel.Text = "Action: only install updates";
+            else
+                ActionNextLabel.Text = "Action: uninstall, but keep songs, then install updates";
+            if (InstalledVersion.StartsWith("2.") || InstalledVersion.StartsWith("3.") || InstalledVersion.StartsWith("4."))
+            {
+                MessageBox.Show("Your installed version of MyLittleKaraoke is too old to be automatically updated." + Environment.NewLine +
+                    "Thus, a full new installation will be required.", "Very old version detected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ActionNextLabel.Text = "Action: uninstall + new installation";
+            }
+            InstalledVersionLabel.Text = "Installed version: " + InstalledVersion;
+            InstalledPackageLabel.Text = "Installed package: " + InstalledPackage;
         }
     }
 }

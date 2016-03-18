@@ -12,7 +12,14 @@ namespace MyLittleKaraoke_WebInstall
 
         public string GetSongVersion(string InstallFilePath)
         {
-            return File.ReadAllLines(Path.Combine(Path.Combine(InstallFilePath, "songs"), "version.txt")).First().ToString();
+            try
+            {
+                return File.ReadAllLines(Path.Combine(Path.Combine(InstallFilePath, "songs"), "version.txt")).First().ToString();
+            }
+            catch (Exception)
+            {
+                return "none";
+            }
         }
 
         public void SetSongVersion(string InstallFilePath, string SongVersion)
@@ -22,7 +29,14 @@ namespace MyLittleKaraoke_WebInstall
 
         public string GetPackageVersion(string InstallFilePath)
         {
-            return File.ReadAllLines(Path.Combine(InstallFilePath, "version.txt")).First().ToString();
+            try
+            {
+                return File.ReadAllLines(Path.Combine(InstallFilePath, "version.txt")).First().ToString();
+            }
+            catch (Exception)
+            {
+                return "none";
+            }
         }
 
         public void SetPackageVersion(string InstallFilePath, string PackageVersion)
