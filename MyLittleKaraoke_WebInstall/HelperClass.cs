@@ -11,8 +11,8 @@ using System.Security.Principal;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
 using Microsoft.Win32;
-using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace MyLittleKaraoke_WebInstall
 {
@@ -98,11 +98,11 @@ namespace MyLittleKaraoke_WebInstall
         {
             try
             {
-                return Registry.LocalMachine.OpenSubKey("SOFTWARE\\DerpyMuffinsFactory", true).getValue("MLK Path");;
+                return (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\DerpyMuffinsFactory", "MLK Path", null);
             }
             catch (Exception ex)
             {
-                return "";
+                return null;
             }
         }
 
