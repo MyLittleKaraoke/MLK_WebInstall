@@ -34,12 +34,44 @@ namespace MyLittleKaraoke_WebInstall
         {
             try
             {
-                return System.IO.File.ReadAllLines(InstallPath + @"\songs\version.txt").First().Contains("5.0 Final");
+                return GetSongVersion(InstallPath).Contains("5.0 Final");
             }
             catch (Exception)
             {
                 return false;
             }
+        }
+
+        public string[,] FilterPackageList(string[,] PackageList, string PackageVersionString)
+        {
+            try
+            {
+                int FoundItem = -1;
+                string[,] internalPackageList = new string[1, 1]; //without this, the compiler does not trust that internalPackageList is always assigned
+                for (int intCurrFile = 0; intCurrFile < PackageList.GetLength(0); intCurrFile++)
+                {
+                    if (FoundItem > -1)
+                    {
+                        internalPackageList[intCurrFile - FoundItem - 1, 0] = PackageList[intCurrFile,0];
+                        internalPackageList[intCurrFile - FoundItem - 1, 1] = PackageList[intCurrFile, 1];
+                    }
+                    else //string not yet found
+                    {
+                        if (PackageList[intCurrFile,0].Equals(PackageVersionString))
+                        {
+                        FoundItem = intCurrFile;
+                        internalPackageList = new string[(PackageList.GetLength(0) - intCurrFile), 2];
+                        }
+                    }
+                }
+                return internalPackageList;
+            }
+            catch (Exception ex)
+            {
+                cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "FilterPackageList");
+                return PackageList;
+            }
+
         }
     }
 }
