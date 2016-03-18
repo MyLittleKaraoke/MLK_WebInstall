@@ -113,18 +113,6 @@ namespace MyLittleKaraoke_WebInstall
             return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
 
-        public bool IsMlkSimAC3(string InstallPath)
-        {
-            try
-            {
-                return System.IO.File.ReadAllLines(InstallPath + @"\songs\version.txt").First().Contains("5.0 Final");
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
         public void SetWritePermissionForLoggedInUsers(string FolderPath)
         {
             try
