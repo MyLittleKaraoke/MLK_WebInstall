@@ -207,6 +207,32 @@ namespace MyLittleKaraoke_WebInstall
             }
         }
 
+        public void Run_MLK_SIM4_Uninstaller(string FolderPath)
+        {
+            try
+            {
+                if (MessageBox.Show("An old installation of MyLittleKaraoke has been detected and needs to be uninstalled first." + Environment.NewLine +
+                    "Do you want to automatically uninstall it now?", "Uninstall old version?",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                {
+                    try{Directory.Delete(Path.Combine(Path.Combine(FolderPath, "songs"), "Downloads"),true);}
+                    catch (Exception){;}
+                    Directory.Move(Path.Combine(FolderPath, "songs"), Environment.SpecialFolder.ApplicationData.ToString());
+                    System.Diagnostics.Process.Start("MsiExec.exe /x{590FE3A5-47DB-42C0-B868-D5E43F46DCBC} /passive /norestart");
+                    if (MessageBox.Show("Please press yes when uninstall finished successfully.", "Confirm when uninstall completed", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+                    { throw new InvalidOperationException("User did not confirm successfull uninstall of MLK SIM4"); };
+                }
+                else
+                {
+                    ShowErrorMessageDialog("User aborted uninstall of previous version.", "", "Run_MLK_SIM4_Uninstaller");
+                };
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessageDialog("Was not able to correctly backup songs folder or uninstall MLK SIM4: " + ex.Message, ex.StackTrace, "Run_MLK_SIM4_Uninstaller");
+            }
+        }
+
         [ComImport]
         [Guid("00021401-0000-0000-C000-000000000046")]
         internal class ShellLink
