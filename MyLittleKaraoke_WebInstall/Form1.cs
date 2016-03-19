@@ -279,7 +279,7 @@ namespace MyLittleKaraoke_WebInstall
                 {
                     MessageBox.Show("Installation was successfull but setting the installation path setting failed.", "Setting registry key failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-                cVersion.SetSongVersion(InstallFolderPath, NewMlkSimVersion);
+                //cVersion.SetSongVersion(InstallFolderPath, NewMlkSimVersion);
                 cVersion.SetPackageVersion(InstallFolderPath, Path.GetFileName((new Uri(FileAddressList[FileAddressList.GetLength(0)-1, 0])).AbsolutePath));
                 cHelper.CreateStartmenuShortcut(Path.Combine(TextBoxInstallPath.Text, "MLK Instruction Manual.pdf"), "My Little Karaoke Instruction Manual");
                 cHelper.CreateStartmenuShortcut(Path.Combine(TextBoxInstallPath.Text, "My Little Karaoke Launcher.exe"), "My Little Karaoke - Singing is Magic");
