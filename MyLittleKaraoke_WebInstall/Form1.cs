@@ -22,9 +22,8 @@ namespace MyLittleKaraoke_WebInstall
 {
     public partial class Form1 : Form
     {
-        private Uri WebFileList = new Uri("https://yp.coco-pommel.org/mlk-web-test/windows.webinst");
+        private Uri WebFileList = new Uri("https://yp.coco-pommel.org/mlk-web-test/rdwindows.webinst");
         private string LocalFilenameWeblist = "windows.offlineinst";
-        private const string NewMlkSimVersion = "6.0 Final";
         private string[,] FileAddressList;
         private string InstallFolderPath = "";
         private string InstalledVersion = "none";
@@ -243,9 +242,9 @@ namespace MyLittleKaraoke_WebInstall
                         //all files are now successfully downloaded.
                         InstallationFunctionThread();
                     }
-                    //We start the stopwatch to calculate progress.
-                    sw.Start();
                 }
+                //We start the stopwatch to calculate progress.
+                sw.Start();
             }
             catch (Exception ex)
             {
@@ -264,9 +263,18 @@ namespace MyLittleKaraoke_WebInstall
                     status = "Installation (" + (intCurrFile+1) + " of " + FileAddressList.GetLength(0) + ")";
                     if (this.label5.InvokeRequired) { SetTextCallback d = new SetTextCallback(SetText); this.Invoke(d, new object[] { status }); }
                     if (this.progressBar1.InvokeRequired) { SetValueCallback d = new SetValueCallback(SetValue); this.Invoke(d, new object[] { barvalue }); }
+                    
                     Stream inStream21 = File.OpenRead(Path.Combine(TempPath, CurrentFileDLName));
                     TarArchive tarArchive21 = TarArchive.CreateInputTarArchive(inStream21);
-                    tarArchive21.ExtractContents(TextBoxInstallPath.Text);
+
+                    if (CurrentFileDLName.EndsWith(".mlk"))
+                        tarArchive21.ExtractContents(Path.Combine(InstallFolderPath, "songs"));
+                    else if (CurrentFileDLName.EndsWith(".mlt"))
+                        tarArchive21.ExtractContents(Path.Combine(InstallFolderPath, "themes"));
+                    else if (CurrentFileDLName.EndsWith(".mlu"))
+                        tarArchive21.ExtractContents(InstallFolderPath);
+                    else
+                        cHelper.ShowErrorMessageDialog("Invalid filetype found in FileAddressList!", CurrentFileDLName, "InstallationFunctionThread()");
                     tarArchive21.Close();
                     inStream21.Close();
                 }
