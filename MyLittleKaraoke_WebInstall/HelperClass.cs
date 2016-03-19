@@ -49,6 +49,21 @@ namespace MyLittleKaraoke_WebInstall
             return FileTableNx2;
         }
 
+        public string[,] GetFileAddressesListFromLocal(string LocalFilenameWeblist)
+        {
+            string[] LocalFileContentLines = File.ReadAllLines(LocalFilenameWeblist);
+            string[,] FileTableNx2 = new string[LocalFileContentLines.Length / 2, 2];
+            for (int i = 0; i < LocalFileContentLines.Length - 1; i++) //-1 because of the linux-typical line-break at file-end
+            {
+                try
+                {
+                    FileTableNx2[i / 2, i % 2] = LocalFileContentLines[i];
+                }
+                catch (Exception) { ;}
+            }
+            return FileTableNx2;
+        }
+
         private string GetWebPageContent(string PageURL)
         {
             try
@@ -83,7 +98,7 @@ namespace MyLittleKaraoke_WebInstall
                 Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Classes\.mlk");
                 Registry.SetValue(@"HKEY_LOCAL_MACHINE\Software\Classes\.mlk", null, "derpymuffinsfactory.mlk.v1");
                 Registry.LocalMachine.CreateSubKey(@"SOFTWARE\\DerpyMuffinsFactory");
-                Registry.LocalMachine.OpenSubKey("SOFTWARE\\DerpyMuffinsFactory", true).SetValue("MLK Path", (string)InstallPath + "\\", Microsoft.Win32.RegistryValueKind.String);
+                Registry.LocalMachine.OpenSubKey("SOFTWARE\\DerpyMuffinsFactory", true).SetValue("MLK Path", (string)InstallPath , Microsoft.Win32.RegistryValueKind.String);
                 return true;
             }
             catch (Exception ex)
@@ -205,7 +220,7 @@ namespace MyLittleKaraoke_WebInstall
                 {
                     try{Directory.Delete(Path.Combine(Path.Combine(FolderPath, "songs"), "Downloads"),true);}
                     catch (Exception){;}
-                    Directory.Move(Path.Combine(FolderPath, "songs"), Environment.SpecialFolder.ApplicationData.ToString());
+                    Directory.Move(Path.Combine(FolderPath, "songs"), Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
                     System.Diagnostics.Process.Start("MsiExec.exe /x{590FE3A5-47DB-42C0-B868-D5E43F46DCBC} /passive /norestart");
                     if (MessageBox.Show("Please press yes when uninstall finished successfully.", "Confirm when uninstall completed", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
                     { throw new InvalidOperationException("User did not confirm successfull uninstall of MLK SIM4"); };

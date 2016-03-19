@@ -22,7 +22,9 @@ namespace MyLittleKaraoke_WebInstall
 {
     public partial class Form1 : Form
     {
-        private Uri WebFileList = new Uri("https://yp.coco-pommel.org/mlk-web-test/rdwindows.webinst");
+        private Uri WebFileList = new Uri("https://yp.coco-pommel.org/mlk-web-test/windows.webinst");
+        private string LocalFilenameWeblist = "windows.offlineinst";
+        private const string NewMlkSimVersion = "6.0 Final";
         private string[,] FileAddressList;
         private string InstallFolderPath = "";
         private string InstalledVersion = "none";
@@ -131,9 +133,22 @@ namespace MyLittleKaraoke_WebInstall
                 Timeout.Interval = 30000;
                 Timeout.Start();
                 // TIMER - End.
+                Application.DoEvents();
                 PrepareForSetup();
-                FileAddressList = cHelper.GetFileAddressesListFromWeb(WebFileList);
-                DownloadFiles(null, null);
+                Application.DoEvents();
+                if (cHelper.IsDVDInstallation())
+                    FileAddressList = cHelper.GetFileAddressesListFromLocal(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,LocalFilenameWeblist));
+                else
+                    FileAddressList = cHelper.GetFileAddressesListFromWeb(WebFileList);
+                Application.DoEvents();
+                if (cHelper.IsDVDInstallation())
+                {
+                    FileAddressList = cHelper.GetFileAddressesListFromLocal(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LocalFilenameWeblist));
+                    Application.DoEvents();
+                    InstallationFunctionThread();
+                }
+                else
+                    DownloadFiles(null, null);
             }
             catch (Exception ex)
             {
@@ -162,6 +177,8 @@ namespace MyLittleKaraoke_WebInstall
                 else
                 {
                     Directory.CreateDirectory(InstallFolderPath);
+                    if (ActionNextLabel.Text == "Action: uninstall, but keep songs, then install updates")
+                        Directory.Move(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "songs"), InstallFolderPath);
                 }
                 cHelper.SetWritePermissionForLoggedInUsers(InstallFolderPath);
             }
@@ -181,14 +198,14 @@ namespace MyLittleKaraoke_WebInstall
                 {
                     CurrentFileDLName = Path.GetFileName((new Uri(FileAddressList[intCurrFile, 0])).AbsolutePath);
                     label8.Text = "Part " + (intCurrFile + 1) + " of " + FileAddressList.GetLength(0);
-                    if (File.Exists(TempPath + @"\" + CurrentFileDLName))
+                    if (File.Exists(Path.Combine(TempPath, CurrentFileDLName)))
                     {
-                        string GenByte = new System.IO.FileInfo(TempPath + @"\" + CurrentFileDLName).Length.ToString();
+                        string GenByte = new System.IO.FileInfo(Path.Combine(TempPath, CurrentFileDLName)).Length.ToString();
                         //if it match, then we download the next file!
                         if (FileAddressList[intCurrFile, 1].Equals(GenByte) == false)
                         {
                             // Delete the file if it exist.
-                            if (File.Exists(TempPath + @"\" + CurrentFileDLName)) { File.Delete(TempPath + @"\" + CurrentFileDLName); }
+                            if (File.Exists(Path.Combine(TempPath, CurrentFileDLName))) { File.Delete(Path.Combine(TempPath, CurrentFileDLName)); }
                             // Ask user to redownload or cancel.
                             DialogResult dialogResult = MessageBox.Show("the downloaded file " + CurrentFileDLName + " is corrupted. Do you want to retry downloading?", "File verification FAILED", MessageBoxButtons.YesNo);
                             if (dialogResult == DialogResult.Yes)
@@ -217,7 +234,7 @@ namespace MyLittleKaraoke_WebInstall
                         Canard = new WebClient();
                         Canard.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadFiles);
                         Canard.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
-                        Canard.DownloadFileAsync(new Uri(FileAddressList[intCurrFile, 0]), TempPath + @"\" + CurrentFileDLName);
+                        Canard.DownloadFileAsync(new Uri(FileAddressList[intCurrFile, 0]), Path.Combine(TempPath, CurrentFileDLName));
                         progressBar2.Value = 0;
                         break;
                     }
@@ -247,7 +264,7 @@ namespace MyLittleKaraoke_WebInstall
                     status = "Installation (" + (intCurrFile+1) + " of " + FileAddressList.GetLength(0) + ")";
                     if (this.label5.InvokeRequired) { SetTextCallback d = new SetTextCallback(SetText); this.Invoke(d, new object[] { status }); }
                     if (this.progressBar1.InvokeRequired) { SetValueCallback d = new SetValueCallback(SetValue); this.Invoke(d, new object[] { barvalue }); }
-                    Stream inStream21 = File.OpenRead(TempPath + @"\" + CurrentFileDLName);
+                    Stream inStream21 = File.OpenRead(Path.Combine(TempPath, CurrentFileDLName));
                     TarArchive tarArchive21 = TarArchive.CreateInputTarArchive(inStream21);
                     tarArchive21.ExtractContents(TextBoxInstallPath.Text);
                     tarArchive21.Close();
@@ -262,6 +279,8 @@ namespace MyLittleKaraoke_WebInstall
                 {
                     MessageBox.Show("Installation was successfull but setting the installation path setting failed.", "Setting registry key failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
+                cVersion.SetSongVersion(InstallFolderPath, NewMlkSimVersion);
+                cVersion.SetPackageVersion(InstallFolderPath, Path.GetFileName((new Uri(FileAddressList[FileAddressList.GetLength(0)-1, 0])).AbsolutePath));
                 cHelper.CreateStartmenuShortcut(Path.Combine(TextBoxInstallPath.Text, "MLK Instruction Manual.pdf"), "My Little Karaoke Instruction Manual");
                 cHelper.CreateStartmenuShortcut(Path.Combine(TextBoxInstallPath.Text, "My Little Karaoke Launcher.exe"), "My Little Karaoke - Singing is Magic");
                 status = "Installation is done!";
@@ -289,7 +308,7 @@ namespace MyLittleKaraoke_WebInstall
         private void Form1_Load(object sender, EventArgs e)
         {
             try
-            {
+            {;
                 if (cHelper.IsAdministrator() == false)
                 {
                     // Restart program and run as admin
@@ -306,11 +325,11 @@ namespace MyLittleKaraoke_WebInstall
                 }
                 else if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
                 {
-                    InstallFolderPath = Environment.GetEnvironmentVariable("ProgramFiles(x86)") + @"\My Little Karaoke";
+                    InstallFolderPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "My Little Karaoke");
                 }
                 else
                 {
-                    InstallFolderPath = Environment.GetEnvironmentVariable("ProgramFiles") + @"\My Little Karaoke";
+                    InstallFolderPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles"), "My Little Karaoke");
                 };
                 TextBoxInstallPath.Text = InstallFolderPath;
                 RefreshInitialization();

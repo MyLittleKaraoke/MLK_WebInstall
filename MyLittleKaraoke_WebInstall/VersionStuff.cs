@@ -41,7 +41,7 @@ namespace MyLittleKaraoke_WebInstall
 
         public void SetPackageVersion(string InstallFilePath, string PackageVersion)
         {
-            File.WriteAllText(Path.Combine(InstallFilePath, "songs"), PackageVersion);
+            File.WriteAllText(Path.Combine(InstallFilePath,"version.txt"), PackageVersion);
         }
 
         public bool IsMlkSimAC3(string InstallPath)
@@ -71,7 +71,7 @@ namespace MyLittleKaraoke_WebInstall
                     }
                     else //string not yet found
                     {
-                        if (PackageList[intCurrFile,0].Equals(PackageVersionString))
+                        if (PackageList[intCurrFile,0].EndsWith(PackageVersionString))
                         {
                         FoundItem = intCurrFile;
                         internalPackageList = new string[(PackageList.GetLength(0) - intCurrFile), 2];
