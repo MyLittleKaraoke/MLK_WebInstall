@@ -319,7 +319,7 @@ namespace MyLittleKaraoke_WebInstall
                     Application.Exit();
                 }
                 String InstLocation = cHelper.GetInstallLocationfromRegistryKey();
-                if (InstLocation.Equals(null) == false)
+                if (InstLocation != null)
                 {
                     InstallFolderPath = InstLocation;
                 }
