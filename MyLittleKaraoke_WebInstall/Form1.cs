@@ -62,13 +62,6 @@ namespace MyLittleKaraoke_WebInstall
             }
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            textBox2.ReadOnly = false;
-            checkBox1.Enabled = false;
-            this.Height = 550;
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             try
@@ -124,7 +117,6 @@ namespace MyLittleKaraoke_WebInstall
             {
                 DownloadAndInstallButton.Enabled = false;
                 this.Height = 450;
-                String Server = textBox2.Text;
                 Timeout = new System.Windows.Forms.Timer();
                 Application.DoEvents();
                 // TIMER - Launch code to check if download is still active every 30 seconds)
@@ -195,6 +187,7 @@ namespace MyLittleKaraoke_WebInstall
             {
                 for (int intCurrFile = sucessfullyDownloadedCount; intCurrFile < FileAddressList.GetLength(0); intCurrFile++)
                 {
+                    Application.DoEvents();
                     CurrentFileDLName = Path.GetFileName((new Uri(FileAddressList[intCurrFile, 0])).AbsolutePath);
                     label8.Text = "Part " + (intCurrFile + 1) + " of " + FileAddressList.GetLength(0);
                     if (File.Exists(Path.Combine(TempPath, CurrentFileDLName)))
@@ -258,13 +251,19 @@ namespace MyLittleKaraoke_WebInstall
             {
                 for (int intCurrFile = 0; intCurrFile < FileAddressList.GetLength(0); intCurrFile++)
                 {
+                    Application.DoEvents();
                     barvalue = ( 100 * intCurrFile ) / FileAddressList.GetLength(0);
                     CurrentFileDLName = Path.GetFileName((new Uri(FileAddressList[intCurrFile, 0])).AbsolutePath);
                     status = "Installation (" + (intCurrFile+1) + " of " + FileAddressList.GetLength(0) + ")";
                     if (this.label5.InvokeRequired) { SetTextCallback d = new SetTextCallback(SetText); this.Invoke(d, new object[] { status }); }
                     if (this.progressBar1.InvokeRequired) { SetValueCallback d = new SetValueCallback(SetValue); this.Invoke(d, new object[] { barvalue }); }
-                    
-                    Stream inStream21 = File.OpenRead(Path.Combine(TempPath, CurrentFileDLName));
+                    Stream inStream21;
+                    if (cHelper.IsDVDInstallation())
+                    {
+                        inStream21 = File.OpenRead(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CurrentFileDLName)); 
+                    }
+                    else
+                        inStream21 = File.OpenRead(Path.Combine(TempPath, CurrentFileDLName)); // TempPath
                     TarArchive tarArchive21 = TarArchive.CreateInputTarArchive(inStream21);
 
                     if (CurrentFileDLName.EndsWith(".mlk"))

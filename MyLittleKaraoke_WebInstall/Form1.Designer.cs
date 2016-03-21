@@ -43,9 +43,6 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.InstalledVersionLabel = new System.Windows.Forms.Label();
             this.InstalledPackageLabel = new System.Windows.Forms.Label();
             this.ActionNextLabel = new System.Windows.Forms.Label();
@@ -177,35 +174,6 @@
             this.label6.TabIndex = 14;
             this.label6.Text = "Download (Overall) progress:";
             // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(617, 73);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(135, 17);
-            this.checkBox1.TabIndex = 15;
-            this.checkBox1.Text = "Custom download URL";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(229, 450);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(41, 13);
-            this.label9.TabIndex = 16;
-            this.label9.Text = "Server:";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(276, 447);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(264, 20);
-            this.textBox2.TabIndex = 17;
-            this.textBox2.Text = "http://192.168.9.1/virtualbox/mlkdev/";
-            // 
             // InstalledVersionLabel
             // 
             this.InstalledVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -248,8 +216,6 @@
             this.Controls.Add(this.ActionNextLabel);
             this.Controls.Add(this.InstalledPackageLabel);
             this.Controls.Add(this.InstalledVersionLabel);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.label9);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
@@ -264,7 +230,6 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.checkBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -296,9 +261,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label InstalledVersionLabel;
         private System.Windows.Forms.Label InstalledPackageLabel;
         private System.Windows.Forms.Label ActionNextLabel;
