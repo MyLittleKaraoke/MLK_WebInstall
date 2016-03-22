@@ -92,10 +92,11 @@
             this.TextBoxInstallPath.Size = new System.Drawing.Size(656, 20);
             this.TextBoxInstallPath.TabIndex = 4;
             this.TextBoxInstallPath.Text = "C:\\Program Files\\My Little Karaoke";
+            this.TextBoxInstallPath.TextChanged += new System.EventHandler(this.TextBoxInstallPath_TextChanged);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(677, 174);
+            this.button1.Location = new System.Drawing.Point(677, 176);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 5;

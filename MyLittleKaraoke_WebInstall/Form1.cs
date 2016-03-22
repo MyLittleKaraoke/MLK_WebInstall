@@ -116,6 +116,7 @@ namespace MyLittleKaraoke_WebInstall
             try
             {
                 DownloadAndInstallButton.Enabled = false;
+                button1.Enabled = false;
                 this.Height = 450;
                 Timeout = new System.Windows.Forms.Timer();
                 Application.DoEvents();
@@ -366,6 +367,19 @@ namespace MyLittleKaraoke_WebInstall
             }
             InstalledVersionLabel.Text = "Installed version: " + InstalledVersion;
             InstalledPackageLabel.Text = "Installed package: " + InstalledPackage;
+        }
+
+        private void TextBoxInstallPath_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                InstallFolderPath = TextBoxInstallPath.Text;
+                RefreshInitialization();
+            }
+            catch (Exception ex)
+            {
+                cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "BrowseInstallerLocationButton_Click");
+            }
         }
     }
 }
