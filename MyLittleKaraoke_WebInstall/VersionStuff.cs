@@ -31,7 +31,7 @@ namespace MyLittleKaraoke_WebInstall
         {
             try
             {
-                return File.ReadAllLines(Path.Combine(InstallFilePath, "version.txt")).First().ToString();
+                return File.ReadAllLines(Path.Combine(InstallFilePath, "packageversion.txt")).First().ToString();
             }
             catch (Exception)
             {
@@ -41,7 +41,7 @@ namespace MyLittleKaraoke_WebInstall
 
         public void SetPackageVersion(string InstallFilePath, string PackageVersion)
         {
-            File.WriteAllText(Path.Combine(InstallFilePath,"version.txt"), PackageVersion);
+            File.WriteAllText(Path.Combine(InstallFilePath,"packageversion.txt"), PackageVersion);
         }
 
         public bool IsMlkSimAC3(string InstallPath)
