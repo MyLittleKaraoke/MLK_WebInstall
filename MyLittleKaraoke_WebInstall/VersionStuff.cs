@@ -56,6 +56,18 @@ namespace MyLittleKaraoke_WebInstall
             }
         }
 
+        public bool IsMlkSimAC3Package(string PackageName)
+        {
+            try
+            {
+                return PackageName.Contains("AC3-");
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public string[,] FilterPackageList(string[,] PackageList, string PackageVersionString)
         {
             try

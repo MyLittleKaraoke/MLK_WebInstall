@@ -135,7 +135,6 @@ namespace MyLittleKaraoke_WebInstall
                 Application.DoEvents();
                 if (cHelper.IsDVDInstallation())
                 {
-                    FileAddressList = cHelper.GetFileAddressesListFromLocal(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, LocalFilenameWeblist));
                     Application.DoEvents();
                     InstallationFunctionThread();
                 }
@@ -191,6 +190,8 @@ namespace MyLittleKaraoke_WebInstall
                     Application.DoEvents();
                     CurrentFileDLName = Path.GetFileName((new Uri(FileAddressList[intCurrFile, 0])).AbsolutePath);
                     label8.Text = "Part " + (intCurrFile + 1) + " of " + FileAddressList.GetLength(0);
+                    if (cVersion.IsMlkSimAC3Package(CurrentFileDLName) && ActionNextLabel.Text == "Action: uninstall, but keep songs, then install updates")
+                        continue;
                     if (File.Exists(Path.Combine(TempPath, CurrentFileDLName)))
                     {
                         string GenByte = new System.IO.FileInfo(Path.Combine(TempPath, CurrentFileDLName)).Length.ToString();
@@ -231,11 +232,12 @@ namespace MyLittleKaraoke_WebInstall
                         progressBar2.Value = 0;
                         break;
                     }
-                    if (sucessfullyDownloadedCount == FileAddressList.GetLength(0))
-                    {
-                        //all files are now successfully downloaded.
-                        InstallationFunctionThread();
-                    }
+                }
+                if (sucessfullyDownloadedCount == FileAddressList.GetLength(0))
+                {
+                    //all files are now successfully downloaded.
+                    progressBar2.Value = 100;
+                    InstallationFunctionThread();
                 }
                 //We start the stopwatch to calculate progress.
                 sw.Start();
