@@ -35,7 +35,6 @@ namespace MyLittleKaraoke_WebInstall
         private string Downloaded;
         private string Downloaded2;
         private string status;
-        private int barvalue;
         private string TempPath = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", String.Empty).ToString();
         delegate void SetTextCallback(string status);
         delegate void SetValueCallback(int barvalue);
@@ -161,12 +160,14 @@ namespace MyLittleKaraoke_WebInstall
             try
             {
                 if (ActionNextLabel.Text == "Action: uninstall, but keep songs, then install updates")
+                {
                     cHelper.Run_MLK_SIM4_Uninstaller(InstallFolderPath);
+                    Directory.Move(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SIM4toNew"), Path.Combine(InstallFolderPath, "songs"));
+                }
                 else if (ActionNextLabel.Text == "Action: uninstall + new installation")
                 {
                     cHelper.Run_Old_Uninstaller();
                 };
-
                 if (Directory.Exists(InstallFolderPath))
                 {
                     if (Directory.Exists(Path.Combine(InstallFolderPath, "songs")) == false)
@@ -177,8 +178,6 @@ namespace MyLittleKaraoke_WebInstall
                 else
                 {
                     Directory.CreateDirectory(InstallFolderPath);
-                    if (ActionNextLabel.Text == "Action: uninstall, but keep songs, then install updates")
-                        Directory.Move(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "songs"), InstallFolderPath);
                 }
                 cHelper.SetWritePermissionForLoggedInUsers(InstallFolderPath);
             }
@@ -312,7 +311,6 @@ namespace MyLittleKaraoke_WebInstall
 
             status = "Installation is done!";
             MessageBox.Show("Installation of MyLittleKaraoke was successfull! Have fun!");
-
         }
 
         private void SetText(string text)
@@ -328,7 +326,7 @@ namespace MyLittleKaraoke_WebInstall
         private void Form1_Load(object sender, EventArgs e)
         {
             try
-            {;
+            {
                 if (cHelper.IsAdministrator() == false)
                 {
                     // Restart program and run as admin
@@ -339,7 +337,7 @@ namespace MyLittleKaraoke_WebInstall
                     Application.Exit();
                 }
                 String InstLocation = cHelper.GetInstallLocationfromRegistryKey();
-                if (InstLocation != null)
+                if (InstLocation != null && InstLocation.Equals("") != true)
                 {
                     InstallFolderPath = InstLocation;
                 }
@@ -365,6 +363,7 @@ namespace MyLittleKaraoke_WebInstall
             //Get installed Version
             InstalledVersion = cVersion.GetSongVersion(InstallFolderPath);
             InstalledPackage = cVersion.GetPackageVersion(InstallFolderPath);
+            DownloadAndInstallButton.Text = "Install the Game!";
             if (InstalledVersion.Equals("none") == true)
                 ActionNextLabel.Text = "Action: new installation";
             else if (InstalledPackage.Equals("none") == false)

@@ -216,12 +216,14 @@ namespace MyLittleKaraoke_WebInstall
             {
                 if (MessageBox.Show("An old installation of MyLittleKaraoke has been detected and needs to be uninstalled first." + Environment.NewLine +
                     "Do you want to automatically uninstall it now?", "Uninstall old version?",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     try{Directory.Delete(Path.Combine(Path.Combine(FolderPath, "songs"), "Downloads"),true);}
                     catch (Exception){;}
-                    Directory.Move(Path.Combine(FolderPath, "songs"), Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
-                    System.Diagnostics.Process.Start("MsiExec.exe /x{590FE3A5-47DB-42C0-B868-D5E43F46DCBC} /passive /norestart");
+                    try { Directory.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SIM4toNew"), true); }
+                    catch (Exception) { ;}
+                    Directory.Move(Path.Combine(FolderPath, "songs"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SIM4toNew"));
+                    System.Diagnostics.Process.Start("cmd.exe", "/Q /C MsiExec.exe /x{590FE3A5-47DB-42C0-B868-D5E43F46DCBC} /passive /norestart");
                     if (MessageBox.Show("Please press yes when uninstall finished successfully.", "Confirm when uninstall completed", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
                     { throw new InvalidOperationException("User did not confirm successfull uninstall of MLK SIM4"); };
                 }
