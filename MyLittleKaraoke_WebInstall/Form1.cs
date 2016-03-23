@@ -301,6 +301,7 @@ namespace MyLittleKaraoke_WebInstall
                 cVersion.SetPackageVersion(InstallFolderPath, Path.GetFileName((new Uri(FileAddressList[FileAddressList.GetLength(0)-1, 0])).AbsolutePath));
                 cHelper.CreateStartmenuShortcut(Path.Combine(TextBoxInstallPath.Text, "MLK Instruction Manual.pdf"), "My Little Karaoke Instruction Manual");
                 cHelper.CreateStartmenuShortcut(Path.Combine(TextBoxInstallPath.Text, "My Little Karaoke Launcher.exe"), "My Little Karaoke - Singing is Magic");
+                cHelper.CreateStartmenuShortcut("https://www.mylittlekaraoke.com/highscores/", "MLK - Online Leaderboard");
                 status = "Installation is done!";
                 RefreshInitialization();
             }
