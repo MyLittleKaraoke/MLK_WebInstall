@@ -117,7 +117,7 @@ namespace MyLittleKaraoke_WebInstall
             {
                 DownloadAndInstallButton.Enabled = false;
                 button1.Enabled = false;
-                this.Height = 450;
+                this.Height = 500;
                 Timeout = new System.Windows.Forms.Timer();
                 Application.DoEvents();
                 // TIMER - Launch code to check if download is still active every 30 seconds)
@@ -132,6 +132,7 @@ namespace MyLittleKaraoke_WebInstall
                     FileAddressList = cHelper.GetFileAddressesListFromLocal(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,LocalFilenameWeblist));
                 else
                     FileAddressList = cHelper.GetFileAddressesListFromWeb(WebFileList);
+                label10.Text = "Part 0 of " + FileAddressList.GetLength(0);
                 Application.DoEvents();
                 if (cHelper.IsDVDInstallation())
                 {
@@ -182,21 +183,23 @@ namespace MyLittleKaraoke_WebInstall
         public void DownloadFiles(object sender, AsyncCompletedEventArgs e)
         {
             //We stop the stopwatch.
-            sw.Stop();
+            //sw.Stop();
             try
             {
                 for (int intCurrFile = sucessfullyDownloadedCount; intCurrFile < FileAddressList.GetLength(0); intCurrFile++)
                 {
+                    sw.Reset();
                     Application.DoEvents();
                     CurrentFileDLName = Path.GetFileName((new Uri(FileAddressList[intCurrFile, 0])).AbsolutePath);
                     label8.Text = "Part " + (intCurrFile + 1) + " of " + FileAddressList.GetLength(0);
+                    progressBar2.Value = 100 * intCurrFile / FileAddressList.GetLength(0);
                     if (cVersion.IsMlkSimAC3Package(CurrentFileDLName) && ActionNextLabel.Text == "Action: uninstall, but keep songs, then install updates")
                         continue;
                     if (File.Exists(Path.Combine(TempPath, CurrentFileDLName)))
                     {
                         string GenByte = new System.IO.FileInfo(Path.Combine(TempPath, CurrentFileDLName)).Length.ToString();
                         //if it match, then we download the next file!
-                        if (FileAddressList[intCurrFile, 1].Equals(GenByte) == false)
+                        if (FileAddressList[intCurrFile, 1].Equals(GenByte) == false && GenByte.Equals("483491840") ==false)
                         {
                             // Delete the file if it exist.
                             if (File.Exists(Path.Combine(TempPath, CurrentFileDLName))) { File.Delete(Path.Combine(TempPath, CurrentFileDLName)); }
@@ -228,8 +231,10 @@ namespace MyLittleKaraoke_WebInstall
                         Canard = new WebClient();
                         Canard.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadFiles);
                         Canard.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
+                        
+                        sw.Start();
                         Canard.DownloadFileAsync(new Uri(FileAddressList[intCurrFile, 0]), Path.Combine(TempPath, CurrentFileDLName));
-                        progressBar2.Value = 0;
+                        progressBar1.Value = 0;
                         break;
                     }
                 }
@@ -240,7 +245,6 @@ namespace MyLittleKaraoke_WebInstall
                     InstallationFunctionThread();
                 }
                 //We start the stopwatch to calculate progress.
-                sw.Start();
             }
             catch (Exception ex)
             {
@@ -255,11 +259,12 @@ namespace MyLittleKaraoke_WebInstall
                 for (int intCurrFile = 0; intCurrFile < FileAddressList.GetLength(0); intCurrFile++)
                 {
                     Application.DoEvents();
-                    barvalue = ( 100 * intCurrFile ) / FileAddressList.GetLength(0);
+                    progressBar3.Value = ( 100 * intCurrFile ) / FileAddressList.GetLength(0);
                     CurrentFileDLName = Path.GetFileName((new Uri(FileAddressList[intCurrFile, 0])).AbsolutePath);
                     status = "Installation (" + (intCurrFile+1) + " of " + FileAddressList.GetLength(0) + ")";
-                    if (this.label5.InvokeRequired) { SetTextCallback d = new SetTextCallback(SetText); this.Invoke(d, new object[] { status }); }
-                    if (this.progressBar1.InvokeRequired) { SetValueCallback d = new SetValueCallback(SetValue); this.Invoke(d, new object[] { barvalue }); }
+                    label10.Text = "Part " + (intCurrFile + 1) + " of " + FileAddressList.GetLength(0);
+                    if (cVersion.IsMlkSimAC3Package(CurrentFileDLName) && ActionNextLabel.Text == "Action: uninstall, but keep songs, then install updates")
+                        continue;
                     Stream inStream21;
                     if (cHelper.IsDVDInstallation())
                     {
@@ -280,11 +285,7 @@ namespace MyLittleKaraoke_WebInstall
                     tarArchive21.Close();
                     inStream21.Close();
                 }
-            
-                status = "Installation (Registering component)";
-                barvalue = 100;
-                if (this.label5.InvokeRequired) { SetTextCallback d = new SetTextCallback(SetText); this.Invoke(d, new object[] { status }); }
-                if (this.progressBar1.InvokeRequired) { SetValueCallback d = new SetValueCallback(SetValue); this.Invoke(d, new object[] { barvalue }); }
+                progressBar3.Value = 100;
                 if (cHelper.SetInstallLocationInRegistryKey(TextBoxInstallPath.Text) == false)
                 {
                     MessageBox.Show("Installation was successfull but setting the installation path setting failed.", "Setting registry key failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);

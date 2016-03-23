@@ -46,6 +46,9 @@
             this.InstalledVersionLabel = new System.Windows.Forms.Label();
             this.InstalledPackageLabel = new System.Windows.Forms.Label();
             this.ActionNextLabel = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.progressBar3 = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -163,7 +166,7 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(351, 23);
             this.label8.TabIndex = 13;
-            this.label8.Text = "Part 0 of 22";
+            this.label8.Text = "Part 0 of ?";
             this.label8.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label6
@@ -208,12 +211,40 @@
             this.ActionNextLabel.Text = "Action: unknown";
             this.ActionNextLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(21, 393);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(149, 13);
+            this.label9.TabIndex = 23;
+            this.label9.Text = "Package Installation progress:";
+            // 
+            // label10
+            // 
+            this.label10.Location = new System.Drawing.Point(401, 434);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(351, 23);
+            this.label10.TabIndex = 22;
+            this.label10.Text = "Part 0 of ?";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // progressBar3
+            // 
+            this.progressBar3.Location = new System.Drawing.Point(18, 409);
+            this.progressBar3.Name = "progressBar3";
+            this.progressBar3.Size = new System.Drawing.Size(734, 23);
+            this.progressBar3.TabIndex = 21;
+            // 
             // Form1
             // 
             this.AcceptButton = this.DownloadAndInstallButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(764, 261);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.progressBar3);
             this.Controls.Add(this.ActionNextLabel);
             this.Controls.Add(this.InstalledPackageLabel);
             this.Controls.Add(this.InstalledVersionLabel);
@@ -265,6 +296,9 @@
         private System.Windows.Forms.Label InstalledVersionLabel;
         private System.Windows.Forms.Label InstalledPackageLabel;
         private System.Windows.Forms.Label ActionNextLabel;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ProgressBar progressBar3;
     }
 }
 
