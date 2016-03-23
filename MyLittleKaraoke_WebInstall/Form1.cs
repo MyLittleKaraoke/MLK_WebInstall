@@ -100,7 +100,7 @@ namespace MyLittleKaraoke_WebInstall
             string downloadsize = string.Format("{0} MB of {1} MB",
                 (e.BytesReceived / 1024d / 1024d).ToString("0.00"),
                 (e.TotalBytesToReceive / 1024d / 1024d).ToString("0.00"));
-            string downloadspeed = string.Format("{0} kb/s", (e.BytesReceived / 1024d / sw.Elapsed.TotalSeconds).ToString("0.00"));
+            string downloadspeed = string.Format("{0} Mbit/s", (e.BytesReceived / 1024d / 1024d * 8d / sw.Elapsed.TotalSeconds).ToString("0.00"));
             label7.Text = downloadsize + " at " + downloadspeed;
         }
 
