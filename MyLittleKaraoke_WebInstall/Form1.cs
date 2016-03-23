@@ -132,6 +132,14 @@ namespace MyLittleKaraoke_WebInstall
                     FileAddressList = cHelper.GetFileAddressesListFromLocal(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,LocalFilenameWeblist));
                 else
                     FileAddressList = cHelper.GetFileAddressesListFromWeb(WebFileList);
+                if (InstalledPackage.Equals("none") == false)
+                    FileAddressList = cVersion.FilterPackageList(FileAddressList, InstalledPackage);
+                if (FileAddressList.GetLength(0) < 1 || FileAddressList[0,0] == null)
+                {
+                    MessageBox.Show("It seems you already have all updates successfully installed! Nothing to do here.", "No updates available!", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    Application.Exit();
+                    return;
+                }
                 label10.Text = "Part 0 of " + FileAddressList.GetLength(0);
                 Application.DoEvents();
                 if (cHelper.IsDVDInstallation())
@@ -295,6 +303,7 @@ namespace MyLittleKaraoke_WebInstall
                 cHelper.CreateStartmenuShortcut(Path.Combine(TextBoxInstallPath.Text, "MLK Instruction Manual.pdf"), "My Little Karaoke Instruction Manual");
                 cHelper.CreateStartmenuShortcut(Path.Combine(TextBoxInstallPath.Text, "My Little Karaoke Launcher.exe"), "My Little Karaoke - Singing is Magic");
                 status = "Installation is done!";
+                RefreshInitialization();
             }
             catch (Exception ex)
             {
@@ -359,7 +368,10 @@ namespace MyLittleKaraoke_WebInstall
             if (InstalledVersion.Equals("none") == true)
                 ActionNextLabel.Text = "Action: new installation";
             else if (InstalledPackage.Equals("none") == false)
+            {
                 ActionNextLabel.Text = "Action: only install updates";
+                DownloadAndInstallButton.Text = "Install Updates";
+            }
             else
                 ActionNextLabel.Text = "Action: uninstall, but keep songs, then install updates";
             if (InstalledVersion.StartsWith("2.") || InstalledVersion.StartsWith("3.") || InstalledVersion.StartsWith("4."))
