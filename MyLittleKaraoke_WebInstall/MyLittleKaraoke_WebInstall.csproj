@@ -74,6 +74,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoUpdater\AutoUpdater.cs" />
+    <Compile Include="AutoUpdater\DownloadUpdateDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoUpdater\DownloadUpdateDialog.Designer.cs">
+      <DependentUpon>DownloadUpdateDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AutoUpdater\UpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoUpdater\UpdateForm.Designer.cs">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,6 +107,12 @@
     <Compile Include="Tar\TarInputStream.cs" />
     <Compile Include="Tar\TarOutputStream.cs" />
     <Compile Include="VersionStuff.cs" />
+    <EmbeddedResource Include="AutoUpdater\DownloadUpdateDialog.resx">
+      <DependentUpon>DownloadUpdateDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AutoUpdater\UpdateForm.resx">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -124,6 +143,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="golden_notes.ico" />
+    <Content Include="Resources\clock_go.png" />
+    <Content Include="Resources\clock_go1.png" />
+    <Content Include="Resources\clock_go_32.png" />
+    <Content Include="Resources\clock_play.png" />
+    <Content Include="Resources\download.png" />
+    <Content Include="Resources\download1.png" />
+    <Content Include="Resources\download_32.png" />
+    <Content Include="Resources\golden_notes.ico" />
+    <Content Include="Resources\hand_point.png" />
+    <Content Include="Resources\update.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
