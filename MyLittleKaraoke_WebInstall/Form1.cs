@@ -343,11 +343,11 @@ namespace MyLittleKaraoke_WebInstall
                 }
                 else if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
                 {
-                    InstallFolderPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "My Little Karaoke");
+                    InstallFolderPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "MyLittleKaraoke");
                 }
                 else
                 {
-                    InstallFolderPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles"), "My Little Karaoke");
+                    InstallFolderPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles"), "MyLittleKaraoke");
                 };
                 TextBoxInstallPath.Text = InstallFolderPath;
                 RefreshInitialization();

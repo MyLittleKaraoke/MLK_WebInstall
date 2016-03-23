@@ -169,7 +169,7 @@ namespace MyLittleKaraoke_WebInstall
                 StringBuilder path = new StringBuilder(260);
                 SHGetSpecialFolderPath(IntPtr.Zero, path, CSIDL_COMMON_STARTMENU, false);
                 string commonStartMenuPath = path.ToString();
-                string appStartMenuPath = Path.Combine(Path.Combine(Path.Combine(commonStartMenuPath, "Programs"), "Derpy Muffins Test Factory"),"My Little Karaoke - Singing is Magic");
+                string appStartMenuPath = Path.Combine(Path.Combine(Path.Combine(commonStartMenuPath, "Programs"), "Derpy Muffins Factory"),"My Little Karaoke - Singing is Magic");
 
                 if (!Directory.Exists(appStartMenuPath))
                     Directory.CreateDirectory(appStartMenuPath);
@@ -246,7 +246,7 @@ namespace MyLittleKaraoke_WebInstall
                     "Do you want to automatically uninstall it now?", "Uninstall old version?",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 {
-                    System.Diagnostics.Process.Start("MsiExec.exe /x{590FE3A5-47DB-42C0-B868-D5E43F46DCBC} /passive /norestart");
+                    System.Diagnostics.Process.Start("cmd.exe", "/Q /C MsiExec.exe /x{590FE3A5-47DB-42C0-B868-D5E43F46DCBC} /passive /norestart");
                     if (MessageBox.Show("Please press yes when uninstall finished successfully.", "Confirm when uninstall completed", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
                     { throw new InvalidOperationException("User did not confirm successfull uninstall of old MLK"); };
                 }
@@ -257,7 +257,7 @@ namespace MyLittleKaraoke_WebInstall
             }
             catch (Exception ex)
             {
-                ShowErrorMessageDialog("Was not able to correctly backup songs folder or uninstall MLK SIM4: " + ex.Message, ex.StackTrace, "Run_MLK_SIM4_Uninstaller");
+                ShowErrorMessageDialog("Was not able to correctly backup songs folder or uninstall MLK SIM4: " + ex.Message, ex.StackTrace, "Run_Old_Uninstaller");
             }
         }
 
