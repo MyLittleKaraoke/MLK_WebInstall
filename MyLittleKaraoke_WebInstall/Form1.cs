@@ -22,8 +22,8 @@ namespace MyLittleKaraoke_WebInstall
 {
     public partial class Form1 : Form
     {
-        private Uri WebFileList = new Uri("https://yp.coco-pommel.org/mlk-web-test/rdwindows.webinst");
-        private string LocalFilenameWeblist = "windows.offlineinst";
+        private Uri WebFileList = new Uri("https://www.mylittlekaraoke.com/store/webinst/windows.webinst");
+        private string LocalFilenameWeblist = "windows.dvdinst";
         private string[,] FileAddressList;
         private string InstallFolderPath = "";
         private string InstalledVersion = "none";
