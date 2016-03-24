@@ -197,6 +197,10 @@ namespace MyLittleKaraoke_WebInstall
                 {
                     sw.Reset();
                     Application.DoEvents();
+                    if (FileAddressList[intCurrFile,0] == null)
+                    {
+                        break;
+                    }
                     CurrentFileDLName = Path.GetFileName((new Uri(FileAddressList[intCurrFile, 0])).AbsolutePath);
                     label8.Text = "Part " + (intCurrFile + 1) + " of " + FileAddressList.GetLength(0);
                     progressBar2.Value = 100 * intCurrFile / FileAddressList.GetLength(0);
@@ -302,6 +306,7 @@ namespace MyLittleKaraoke_WebInstall
                 cHelper.CreateStartmenuShortcut(Path.Combine(TextBoxInstallPath.Text, "MLK Instruction Manual.pdf"), "My Little Karaoke Instruction Manual");
                 cHelper.CreateStartmenuShortcut(Path.Combine(TextBoxInstallPath.Text, "My Little Karaoke Launcher.exe"), "My Little Karaoke - Singing is Magic");
                 cHelper.CreateStartmenuShortcut("https://www.mylittlekaraoke.com/highscores/", "MLK - Online Leaderboard");
+                cHelper.SetAssociation(".mlk", "MLK_Installer_Package", Path.Combine(TextBoxInstallPath.Text, "MLKHelperGUI.exe"), "MLK Song Package");
                 status = "Installation is done!";
                 RefreshInitialization();
             }

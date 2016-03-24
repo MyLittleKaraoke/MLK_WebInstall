@@ -86,7 +86,7 @@ namespace MyLittleKaraoke_WebInstall
                         if (PackageList[intCurrFile,0].EndsWith(PackageVersionString))
                         {
                         FoundItem = intCurrFile;
-                        internalPackageList = new string[(PackageList.GetLength(0) - intCurrFile), 2];
+                        internalPackageList = new string[(PackageList.GetLength(0) - intCurrFile -1), 2];
                         }
                     }
                 }
