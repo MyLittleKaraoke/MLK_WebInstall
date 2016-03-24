@@ -115,8 +115,8 @@
             this.label4.Size = new System.Drawing.Size(594, 33);
             this.label4.TabIndex = 6;
             this.label4.Text = "If anything happened to your internet connection during the download, or, if the " +
-    "downloaded file is corrupted, \r\nMy Little Karaoke will request you to redownload" +
-    " only the last part.";
+    "downloaded file is corrupted, \r\nMy Little Karaoke will ask you to redownload onl" +
+    "y the last part.";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // DownloadAndInstallButton
