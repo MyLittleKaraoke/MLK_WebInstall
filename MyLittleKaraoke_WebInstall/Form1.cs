@@ -307,6 +307,14 @@ namespace MyLittleKaraoke_WebInstall
                 cHelper.CreateStartmenuShortcut(Path.Combine(TextBoxInstallPath.Text, "My Little Karaoke Launcher.exe"), "My Little Karaoke - Singing is Magic");
                 cHelper.CreateStartmenuShortcut("https://www.mylittlekaraoke.com/highscores/", "MLK - Online Leaderboard");
                 cHelper.SetAssociation(".mlk", "MLK_Installer_Package", Path.Combine(TextBoxInstallPath.Text, "MLKHelperGUI.exe"), "MLK Song Package");
+                if (checkBox1.Checked && cHelper.IsDVDInstallation() == false)
+                {
+                    for (int intCurrFile = 0; intCurrFile < FileAddressList.GetLength(0); intCurrFile++)
+                    {
+                        Application.DoEvents();
+                        File.Delete(Path.Combine(TempPath, CurrentFileDLName));
+                    }
+                }
                 status = "Installation is done!";
                 RefreshInitialization();
             }
