@@ -125,8 +125,6 @@ namespace MyLittleKaraoke_WebInstall
                 Timeout.Start();
                 // TIMER - End.
                 Application.DoEvents();
-                PrepareForSetup();
-                Application.DoEvents();
                 if (cHelper.IsDVDInstallation())
                     FileAddressList = cHelper.GetFileAddressesListFromLocal(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,LocalFilenameWeblist));
                 else
@@ -162,7 +160,6 @@ namespace MyLittleKaraoke_WebInstall
                 if (ActionNextLabel.Text == "Action: uninstall, but keep songs, then install updates")
                 {
                     cHelper.Run_MLK_SIM4_Uninstaller(InstallFolderPath);
-                    Directory.Move(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SIM4toNew"), Path.Combine(InstallFolderPath, "songs"));
                 }
                 else if (ActionNextLabel.Text == "Action: uninstall + new installation")
                 {
@@ -267,6 +264,10 @@ namespace MyLittleKaraoke_WebInstall
         {
             try
             {
+
+                Application.DoEvents();
+                PrepareForSetup();
+                Application.DoEvents();
                 for (int intCurrFile = 0; intCurrFile < FileAddressList.GetLength(0); intCurrFile++)
                 {
                     Application.DoEvents();

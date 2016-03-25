@@ -212,30 +212,41 @@ namespace MyLittleKaraoke_WebInstall
 
         public void Run_MLK_SIM4_Uninstaller(string FolderPath)
         {
-            try
+            
+            if (MessageBox.Show("An old installation of MyLittleKaraoke has been detected and needs to be uninstalled first." + Environment.NewLine +
+                "Do you want to automatically uninstall it now?", "Uninstall old version?",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                if (MessageBox.Show("An old installation of MyLittleKaraoke has been detected and needs to be uninstalled first." + Environment.NewLine +
-                    "Do you want to automatically uninstall it now?", "Uninstall old version?",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                try{Directory.Delete(Path.Combine(Path.Combine(FolderPath, "songs"), "Downloads"),true);}
+                catch (Exception){;}
+                try { Directory.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SIM4toNew"), true); }
+                catch (Exception) { ;}
+                Boolean domanually = false;
+                try
                 {
-                    try{Directory.Delete(Path.Combine(Path.Combine(FolderPath, "songs"), "Downloads"),true);}
-                    catch (Exception){;}
-                    try { Directory.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SIM4toNew"), true); }
-                    catch (Exception) { ;}
-                    Directory.Move(Path.Combine(FolderPath, "songs"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SIM4toNew"));
-                    System.Diagnostics.Process.Start("cmd.exe", "/Q /C MsiExec.exe /x{590FE3A5-47DB-42C0-B868-D5E43F46DCBC} /passive /norestart");
-                    if (MessageBox.Show("Please press yes when uninstall finished successfully.", "Confirm when uninstall completed", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
-                    { throw new InvalidOperationException("User did not confirm successfull uninstall of MLK SIM4"); };
+                        Directory.Move(Path.Combine(FolderPath, "songs"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SIM4toNew"));
                 }
-                else
+                catch (Exception ex)
                 {
-                    ShowErrorMessageDialog("User aborted uninstall of previous version.", "", "Run_MLK_SIM4_Uninstaller");
+                    domanually = true;
+                    MessageBox.Show("Was not able to automatically correctly backup songs folder or uninstall MLK SIM4. Please backup the songs folder manually to a different folder now and then click OK." + Environment.NewLine + "Error Message: " + ex.Message + Environment.NewLine + Environment.NewLine + ex.StackTrace);
+                }
+                try{ System.Diagnostics.Process.Start("cmd.exe", "/Q /C MsiExec.exe /x{590FE3A5-47DB-42C0-B868-D5E43F46DCBC} /passive /norestart"); }
+                catch (Exception) { ;}
+                if (MessageBox.Show("Please press yes when uninstall finished successfully.", "Confirm when uninstall completed", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+                {
+                    throw new InvalidOperationException("User did not confirm successfull uninstall of MLK SIM4");
                 };
+                if (domanually == false)
+                { Directory.Move(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SIM4toNew"), Path.Combine(FolderPath, "songs")); }
+                else
+                { MessageBox.Show("Please now restore the songs folder of the game to the correct path (-> in the MyLittleKaraoke folder) and then press OK to continue the installation."); }
+                
             }
-            catch (Exception ex)
+            else
             {
-                ShowErrorMessageDialog("Was not able to correctly backup songs folder or uninstall MLK SIM4: " + ex.Message, ex.StackTrace, "Run_MLK_SIM4_Uninstaller");
-            }
+                ShowErrorMessageDialog("User aborted uninstall of previous version.", "", "Run_MLK_SIM4_Uninstaller");
+            };
         }
 
         public void Run_Old_Uninstaller()
