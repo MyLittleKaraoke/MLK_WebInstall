@@ -217,8 +217,6 @@ namespace MyLittleKaraoke_WebInstall
                 "Do you want to automatically uninstall it now?", "Uninstall old version?",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                try{Directory.Delete(Path.Combine(Path.Combine(FolderPath, "songs"), "Downloads"),true);}
-                catch (Exception){;}
                 try { Directory.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SIM4toNew"), true); }
                 catch (Exception) { ;}
                 Boolean domanually = false;

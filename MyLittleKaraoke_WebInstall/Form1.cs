@@ -157,6 +157,12 @@ namespace MyLittleKaraoke_WebInstall
         {
             try
             {
+                try { Directory.Delete(Path.Combine(Path.Combine(InstallFolderPath, "songs"), "Downloads"), true); }
+                catch (Exception) { ;}
+                try { Directory.Delete(Path.Combine(Path.Combine(InstallFolderPath, "songs"), "Fixes"), true); }
+                catch (Exception) { ;}
+                try { Directory.Delete(Path.Combine(Path.Combine(InstallFolderPath, "songs"), "Duets"), true); }
+                catch (Exception) { ;}
                 if (ActionNextLabel.Text == "Action: uninstall, but keep songs, then install updates")
                 {
                     cHelper.Run_MLK_SIM4_Uninstaller(InstallFolderPath);
