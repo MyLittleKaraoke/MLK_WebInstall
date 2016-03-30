@@ -116,6 +116,31 @@ namespace MyLittleKaraoke_WebInstall
         {
             try
             {
+                if (cHelper.GetFreeDiskSpaceGB(TempPath) < 16 && (ActionNextLabel.Text == "Action: uninstall + new installation" || ActionNextLabel.Text ==  "Action: new installation"))
+                {
+                    MessageBox.Show("Warning, your harddrive which contains the users 'Downloads' folder does not have enough free disk space. Please choose a different temporary downloads folder after clicking OK and then click the install button again.");
+                    // Create a new instance of FolderBrowserDialog.
+                    FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+                    // A new folder button will display in FolderBrowserDialog.
+                    folderBrowserDialog.ShowNewFolderButton = true;
+                    try { folderBrowserDialog.SelectedPath = TempPath; }
+                    catch (Exception) { ;};
+                    //Show FolderBrowserDialog
+                    DialogResult dlgResult = folderBrowserDialog.ShowDialog();
+                    if (dlgResult.Equals(DialogResult.OK))
+                    {
+                        //Send content to string
+                        string path = folderBrowserDialog.SelectedPath;
+                        //Show selected folder path in textbox1.
+                        TempPath = folderBrowserDialog.SelectedPath;
+                    }
+                    return;
+                }
+                if (cHelper.GetFreeDiskSpaceGB(InstallFolderPath) < 16 && (ActionNextLabel.Text == "Action: uninstall + new installation" || ActionNextLabel.Text == "Action: new installation"))
+                {
+                    MessageBox.Show("Warning, your harddrive installation destination folder does not have enough free disk space. Please choose a different installation folder and click the install button again.");
+                    return;
+                }
                 DownloadAndInstallButton.Enabled = false;
                 button1.Enabled = false;
                 TextBoxInstallPath.Enabled = false;
