@@ -321,5 +321,17 @@ namespace MyLittleKaraoke_WebInstall
             OpenMethod.Close();
             Shell.Close();
         }
+
+        public int GetFreeDiskSpaceGB(string DrivePath)
+        {
+            try
+            {
+                return Convert.ToInt32((new DriveInfo(Path.GetPathRoot(DrivePath))).AvailableFreeSpace / 1024d / 1024d / 1024d);
+            }
+            catch (Exception)
+            {
+                return 29999;
+            }
+        }
     }
 }
