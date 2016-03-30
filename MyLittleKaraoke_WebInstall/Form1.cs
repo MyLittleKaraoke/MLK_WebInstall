@@ -38,6 +38,7 @@ namespace MyLittleKaraoke_WebInstall
         private string TempPath = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders", "{374DE290-123F-4565-9164-39C4925E467B}", String.Empty).ToString();
         delegate void SetTextCallback(string status);
         delegate void SetValueCallback(int barvalue);
+        private short DownloadRetryCount = 0;
         private string CurrentFileDLName;
         private WebClient Canard;
         private System.Windows.Forms.Timer Timeout;
@@ -64,7 +65,8 @@ namespace MyLittleKaraoke_WebInstall
         private void button1_Click(object sender, EventArgs e)
         {
             try
-            {// Create a new instance of FolderBrowserDialog.
+            {
+                // Create a new instance of FolderBrowserDialog.
                 FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
                 // A new folder button will display in FolderBrowserDialog.
                 folderBrowserDialog.ShowNewFolderButton = true;
@@ -131,7 +133,7 @@ namespace MyLittleKaraoke_WebInstall
                     FileAddressList = cHelper.GetFileAddressesListFromWeb(WebFileList);
                 if (InstalledPackage.Equals("none") == false)
                     FileAddressList = cVersion.FilterPackageList(FileAddressList, InstalledPackage);
-                if (FileAddressList.GetLength(0) < 1 || FileAddressList[0,0] == null)
+                if (FileAddressList.GetLength(0) < 1 || FileAddressList[0, 0] == null || FileAddressList[0, 0].Equals(""))
                 {
                     MessageBox.Show("It seems you already have all updates successfully installed! Nothing to do here.", "No updates available!", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     Application.Exit();
@@ -218,20 +220,34 @@ namespace MyLittleKaraoke_WebInstall
                             // Delete the file if it exist.
                             if (File.Exists(Path.Combine(TempPath, CurrentFileDLName))) { File.Delete(Path.Combine(TempPath, CurrentFileDLName)); }
                             // Ask user to redownload or cancel.
-                            DialogResult dialogResult = MessageBox.Show("the downloaded file " + CurrentFileDLName + " is corrupted. Do you want to retry downloading?", "File verification FAILED", MessageBoxButtons.YesNo);
-                            if (dialogResult == DialogResult.Yes)
+                            if (DownloadRetryCount < 5)
                             {
                                 Downloaded = null;
                                 Downloaded2 = null;
                                 GenByte = null;
                                 Timeout.Stop();
+                                DownloadRetryCount += 1;
                                 DownloadAndInstallButton_Click(null, null);
                                 break;
                             }
-                            else if (dialogResult == DialogResult.No)
+                            else
                             {
-                                cHelper.ShowErrorMessageDialog("User aborted after corruped file downloads. Closing application now.", "", "");
-                                break;
+                                DownloadRetryCount = 3;
+                                DialogResult dialogResult = MessageBox.Show("the downloaded file " + CurrentFileDLName + " is corrupted. Please make sure you use a stable internet connection. Do you want to retry downloading?", "File verification FAILED", MessageBoxButtons.YesNo);
+                                if (dialogResult == DialogResult.Yes)
+                                {
+                                    Downloaded = null;
+                                    Downloaded2 = null;
+                                    GenByte = null;
+                                    Timeout.Stop();
+                                    DownloadAndInstallButton_Click(null, null);
+                                    break;
+                                }
+                                else if (dialogResult == DialogResult.No)
+                                {
+                                    cHelper.ShowErrorMessageDialog("User aborted after corruped file downloads. Closing application now.", "", "");
+                                    break;
+                                }
                             }
                         }
                         else
@@ -355,7 +371,7 @@ namespace MyLittleKaraoke_WebInstall
                     Application.Exit();
                 }
                 String InstLocation = cHelper.GetInstallLocationfromRegistryKey();
-                if (InstLocation != null && InstLocation.Equals("") != true)
+                if (InstLocation != null && InstLocation.Equals("") != true && Directory.Exists(InstLocation))
                 {
                     InstallFolderPath = InstLocation;
                 }
