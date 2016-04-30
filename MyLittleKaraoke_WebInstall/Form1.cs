@@ -78,9 +78,13 @@ namespace MyLittleKaraoke_WebInstall
                 {
                     //Send content to string
                     string path = folderBrowserDialog.SelectedPath;
+                    if (path.Contains("MyLittleKaraoke") == false)
+                    {
+                        path += "\\MyLittleKaraoke";
+                    }
                     //Show selected folder path in textbox1.
-                    TextBoxInstallPath.Text = folderBrowserDialog.SelectedPath;
-                    InstallFolderPath = TextBoxInstallPath.Text; 
+                    TextBoxInstallPath.Text = path;
+                    InstallFolderPath = path; 
                     //Browsing start from root folder.
                     Environment.SpecialFolder rootFolder = folderBrowserDialog.RootFolder;
                     RefreshInitialization();
