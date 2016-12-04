@@ -14,6 +14,8 @@ namespace MyLittleKaraoke_WebInstall
 {
     class HelperClass
     {
+        private string SelfPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+
         public void ShowErrorMessageDialog(string sErrorBasic, string sErrorStacktrace, string sLocation)
         {
             MessageBox.Show("Derpy is awfully sorry, but this MyLittleKaraoke Installer just encountered an error.\n" +
@@ -337,7 +339,7 @@ namespace MyLittleKaraoke_WebInstall
 
         public bool IsInGameDirectory() {
             //If both ultrastardx.exe and packageversion.txt exist, we can assume we're in the installdir
-            return File.Exists("ultrastardx.exe") && File.Exists("packageversion.txt");
+            return !(SelfPath.Contains(Path.GetTempPath())) && File.Exists("ultrastardx.exe") && File.Exists("packageversion.txt");
         }
 
         public bool IsProcessOpen(string name)
