@@ -329,6 +329,16 @@ namespace MyLittleKaraoke_WebInstall
                     label10.Text = "Part " + (intCurrFile + 1) + " of " + FileAddressList.GetLength(0);
                     if (cVersion.IsMlkSimAC3Package(CurrentFileDLName) && ActionNextLabel.Text == "Action: uninstall, but keep songs, then install updates")
                         continue;
+                    if (CurrentFileDLName.Contains("clean_downloads"))
+                    {
+                        try { Directory.Delete(Path.Combine(Path.Combine(InstallFolderPath, "songs"), "Downloads"), true); }
+                        catch (Exception) { ;}
+                        try { Directory.Delete(Path.Combine(Path.Combine(InstallFolderPath, "songs"), "Fixes"), true); }
+                        catch (Exception) { ;}
+                        try { Directory.Delete(Path.Combine(Path.Combine(InstallFolderPath, "songs"), "Duets"), true); }
+                        catch (Exception) { ;}
+                        continue;
+                    }
                     Stream inStream21;
                     if (cHelper.IsDVDInstallation())
                     {
