@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Net;
 using System.IO;
-using System.Threading;
-using System.Security.Permissions;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -24,13 +19,13 @@ namespace MyLittleKaraoke_WebInstall
                 "For help, see www.mylittlekaraoke.com/forum\n\n" +
                 "Error description: " + sErrorBasic + "\n\nError location: "+ sLocation + "\n\nExtended information:\n" + sErrorStacktrace, "Error in " + sLocation, MessageBoxButtons.OK, MessageBoxIcon.Error);
             
-            if (System.Windows.Forms.Application.MessageLoop)
+            if (Application.MessageLoop)
             {
-                System.Windows.Forms.Application.Exit();
+                Application.Exit();
             }
             else
             {
-                System.Environment.Exit(1);
+                Environment.Exit(1);
             };
         }
 
@@ -85,7 +80,7 @@ namespace MyLittleKaraoke_WebInstall
             }
         }
 
-        public Boolean SetInstallLocationInRegistryKey(string InstallPath)
+        public bool SetInstallLocationInRegistryKey(string InstallPath)
         {
             try
             {
@@ -306,7 +301,6 @@ namespace MyLittleKaraoke_WebInstall
             RegistryKey BaseKey;
             RegistryKey OpenMethod;
             RegistryKey Shell;
-            RegistryKey CurrentUser;
 
             BaseKey = Registry.ClassesRoot.CreateSubKey(Extension);
             BaseKey.SetValue("", KeyName);
