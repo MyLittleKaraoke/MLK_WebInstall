@@ -115,6 +115,17 @@ namespace MyLittleKaraoke_WebInstall
         {
             try
             {
+                //check if user wants to install to folder which contains the installer already
+                if (SelfPath.Contains(TextBoxInstallPath.Text))
+                {
+                    // Copy program to %temp% and run as admin
+                    string tempPath = Path.GetTempPath() + SelfName;
+
+                    File.Copy(SelfPath, tempPath);
+                    MessageBox.Show("We detected that you try to install to where this insaller is located. Installer will now restart from a temporary location. \n" +
+                        "Please then continue the installation.", "Installer restart from temporary folder required");
+                    cHelper.StartProcessAsAdmin(tempPath);
+                }
                 if (cHelper.GetFreeDiskSpaceGB(TempPath) < 16 && (ActionNextLabel.Text == "Action: uninstall + new installation" || ActionNextLabel.Text ==  "Action: new installation"))
                 {
                     MessageBox.Show("Warning, your harddrive which contains the users 'Downloads' folder does not have enough free disk space. Please choose a different temporary downloads folder after clicking OK and then click the install button again.");
@@ -380,7 +391,6 @@ namespace MyLittleKaraoke_WebInstall
         {
             try
             {
-                // 12/2016 fix
                 if (cHelper.IsInGameDirectory()) {
                     // Copy program to %temp% and run as admin
                     string tempPath = Path.GetTempPath() + SelfName;
