@@ -36,6 +36,8 @@ namespace MyLittleKaraoke_WebInstall
         private WebClient Canard;
         private Timer Timeout;
         Stopwatch sw = new Stopwatch();
+        private string SelfPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+        private string SelfName = Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location);
 
         public Form1()
         {
@@ -378,28 +380,36 @@ namespace MyLittleKaraoke_WebInstall
         {
             try
             {
-                if (cHelper.IsAdministrator() == false)
+                // 12/2016 fix
+                if (cHelper.IsInGameDirectory()) {
+                    // Copy program to %temp% and run as admin
+                    string tempPath = Path.GetTempPath() + SelfName;
+
+                    File.Copy(SelfPath, tempPath);
+                    cHelper.StartProcessAsAdmin(tempPath);
+                }
+
+                if (!cHelper.IsAdministrator())
                 {
-                    // Restart program and run as admin
-                    var exeName = Process.GetCurrentProcess().MainModule.FileName;
-                    ProcessStartInfo startInfo = new ProcessStartInfo(exeName);
-                    startInfo.Verb = "runas";
-                    Process.Start(startInfo);
+                    // Restart program as admin
+                    cHelper.StartProcessAsAdmin(SelfPath);
                     Application.Exit();
                 }
-                String InstLocation = cHelper.GetInstallLocationfromRegistryKey();
+
+                string InstLocation = cHelper.GetInstallLocationfromRegistryKey();
                 if (InstLocation != null && InstLocation.Equals("") != true && Directory.Exists(InstLocation))
                 {
                     InstallFolderPath = InstLocation;
                 }
-                else if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+                else if (8 == IntPtr.Size || (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
                 {
                     InstallFolderPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "MyLittleKaraoke");
                 }
                 else
                 {
                     InstallFolderPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles"), "MyLittleKaraoke");
-                };
+                }
+
                 TextBoxInstallPath.Text = InstallFolderPath;
                 RefreshInitialization();
                 AutoUpdater.Start("https://www.mylittlekaraoke.com/store/webinst/WebInstall.xml");

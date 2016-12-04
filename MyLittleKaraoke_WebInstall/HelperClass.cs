@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Diagnostics;
 
 namespace MyLittleKaraoke_WebInstall
 {
@@ -326,6 +327,17 @@ namespace MyLittleKaraoke_WebInstall
             {
                 return 29999;
             }
+        }
+
+        public void StartProcessAsAdmin(string Path) {
+            ProcessStartInfo startInfo = new ProcessStartInfo(Path);
+            startInfo.Verb = "runas";
+            Process.Start(startInfo);
+        }
+
+        public bool IsInGameDirectory() {
+            //If both ultrastardx.exe and packageversion.txt exist, we can assume we're in the installdir
+            return File.Exists("ultrastardx.exe") && File.Exists("packageversion.txt");
         }
     }
 }
