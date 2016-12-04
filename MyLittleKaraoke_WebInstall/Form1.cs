@@ -2,20 +2,13 @@
 // also Tucker @ irc.ponychat.net #geek (Resume function)
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Net;
 using System.Diagnostics;
 using OperatingSystemInfo;
 using System.IO;
 using ICSharpCode.SharpZipLib.Tar;
-using System.Threading;
-using System.Security.AccessControl;
 using Microsoft.Win32;
 
 namespace MyLittleKaraoke_WebInstall
@@ -41,8 +34,10 @@ namespace MyLittleKaraoke_WebInstall
         private short DownloadRetryCount = 0;
         private string CurrentFileDLName;
         private WebClient Canard;
-        private System.Windows.Forms.Timer Timeout;
+        private Timer Timeout;
         Stopwatch sw = new Stopwatch();
+        private string SelfPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+        private string SelfName = Path.GetFileName(System.Reflection.Assembly.GetEntryAssembly().Location);
 
         public Form1()
         {
@@ -51,7 +46,7 @@ namespace MyLittleKaraoke_WebInstall
                 InitializeComponent();
                 // We determine if the user run Windows XP as path for configurations aren't the same.
                 OSInfo osInfo = new OSInfo();
-                string OS = String.Format("{0}", osInfo.GetOSName);
+                string OS = string.Format("{0}", osInfo.GetOSName);
                 string wxp = "Windows XP";
                 if (OS.Equals(wxp)) { legacy = "1"; }
                 else { legacy = "0"; }
@@ -148,8 +143,8 @@ namespace MyLittleKaraoke_WebInstall
                 DownloadAndInstallButton.Enabled = false;
                 button1.Enabled = false;
                 TextBoxInstallPath.Enabled = false;
-                this.Height = 500;
-                Timeout = new System.Windows.Forms.Timer();
+                Height = 500;
+                Timeout = new Timer();
                 Application.DoEvents();
                 // TIMER - Launch code to check if download is still active every 30 seconds)
                 Timeout.Tick += new EventHandler(CheckTimeout);
@@ -189,12 +184,6 @@ namespace MyLittleKaraoke_WebInstall
         {
             try
             {
-                try { Directory.Delete(Path.Combine(Path.Combine(InstallFolderPath, "songs"), "Downloads"), true); }
-                catch (Exception) { ;}
-                try { Directory.Delete(Path.Combine(Path.Combine(InstallFolderPath, "songs"), "Fixes"), true); }
-                catch (Exception) { ;}
-                try { Directory.Delete(Path.Combine(Path.Combine(InstallFolderPath, "songs"), "Duets"), true); }
-                catch (Exception) { ;}
                 if (ActionNextLabel.Text == "Action: uninstall, but keep songs, then install updates")
                 {
                     cHelper.Run_MLK_SIM4_Uninstaller(InstallFolderPath);
@@ -391,28 +380,36 @@ namespace MyLittleKaraoke_WebInstall
         {
             try
             {
-                if (cHelper.IsAdministrator() == false)
+                // 12/2016 fix
+                if (cHelper.IsInGameDirectory()) {
+                    // Copy program to %temp% and run as admin
+                    string tempPath = Path.GetTempPath() + SelfName;
+
+                    File.Copy(SelfPath, tempPath);
+                    cHelper.StartProcessAsAdmin(tempPath);
+                }
+
+                if (!cHelper.IsAdministrator())
                 {
-                    // Restart program and run as admin
-                    var exeName = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-                    ProcessStartInfo startInfo = new ProcessStartInfo(exeName);
-                    startInfo.Verb = "runas";
-                    System.Diagnostics.Process.Start(startInfo);
+                    // Restart program as admin
+                    cHelper.StartProcessAsAdmin(SelfPath);
                     Application.Exit();
                 }
-                String InstLocation = cHelper.GetInstallLocationfromRegistryKey();
+
+                string InstLocation = cHelper.GetInstallLocationfromRegistryKey();
                 if (InstLocation != null && InstLocation.Equals("") != true && Directory.Exists(InstLocation))
                 {
                     InstallFolderPath = InstLocation;
                 }
-                else if (8 == IntPtr.Size || (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+                else if (8 == IntPtr.Size || (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
                 {
                     InstallFolderPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), "MyLittleKaraoke");
                 }
                 else
                 {
                     InstallFolderPath = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles"), "MyLittleKaraoke");
-                };
+                }
+
                 TextBoxInstallPath.Text = InstallFolderPath;
                 RefreshInitialization();
                 AutoUpdater.Start("https://www.mylittlekaraoke.com/store/webinst/WebInstall.xml");
