@@ -438,11 +438,18 @@ namespace MyLittleKaraoke_WebInstall
 
                 TextBoxInstallPath.Text = InstallFolderPath;
                 RefreshInitialization();
-                AutoUpdater.Start("https://www.mylittlekaraoke.com/store/webinst/WebInstall.xml");
             }
             catch (Exception ex)
             {
                 cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "Form1_Load");
+            }
+            try
+            {
+                AutoUpdater.Start("https://www.mylittlekaraoke.com/store/webinst/WebInstall.xml");
+            }
+            catch (Exception ex)
+            {
+                cHelper.ShowErrorMessageDialog(ex.Message, ex.StackTrace, "Form1_Load::Updater");
             }
         }
 
