@@ -126,6 +126,7 @@ namespace MyLittleKaraoke_WebInstall
                         "Please then continue the installation.", "Installer restart from temporary folder required");
                     cHelper.StartProcessAsAdmin(tempPath);
                 }
+                //check for enough free disk-space
                 if (cHelper.GetFreeDiskSpaceGB(TempPath) < 16 && (ActionNextLabel.Text == "Action: uninstall + new installation" || ActionNextLabel.Text ==  "Action: new installation"))
                 {
                     MessageBox.Show("Warning, your harddrive which contains the users 'Downloads' folder does not have enough free disk space. Please choose a different temporary downloads folder after clicking OK and then click the install button again.");
@@ -149,6 +150,11 @@ namespace MyLittleKaraoke_WebInstall
                 if (cHelper.GetFreeDiskSpaceGB(InstallFolderPath) < 16 && (ActionNextLabel.Text == "Action: uninstall + new installation" || ActionNextLabel.Text == "Action: new installation"))
                 {
                     MessageBox.Show("Warning, your harddrive installation destination folder does not have enough free disk space. Please choose a different installation folder and click the install button again.");
+                    return;
+                }
+                if (cHelper.IsProcessOpen("ultrastardx") || cHelper.IsProcessOpen("My Little Karaoke Launcher") || cHelper.IsProcessOpen("MLKHelperGUI"))
+                {
+                    MessageBox.Show("Please close any other programs from this game and then click on the install button again. Aborting.", "Please close all other MLK applications.");
                     return;
                 }
                 DownloadAndInstallButton.Enabled = false;

@@ -339,5 +339,19 @@ namespace MyLittleKaraoke_WebInstall
             //If both ultrastardx.exe and packageversion.txt exist, we can assume we're in the installdir
             return File.Exists("ultrastardx.exe") && File.Exists("packageversion.txt");
         }
+
+        public bool IsProcessOpen(string name)
+        {
+            foreach (Process clsProcess in Process.GetProcesses())
+            {
+                if (clsProcess.ProcessName.Contains(name))
+                {
+                    Console.WriteLine(clsProcess.ProcessName);
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
