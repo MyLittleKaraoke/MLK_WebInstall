@@ -411,7 +411,7 @@ namespace MyLittleKaraoke_WebInstall
                     // Copy program to %temp% and run as admin
                     string tempPath = Path.GetTempPath() + SelfName;
 
-                    File.Copy(SelfPath, tempPath);
+                    File.Copy(SelfPath, tempPath, true);
                     cHelper.StartProcessAsAdmin(tempPath);
                 }
 
