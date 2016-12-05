@@ -121,7 +121,7 @@ namespace MyLittleKaraoke_WebInstall
                     // Copy program to %temp% and run as admin
                     string tempPath = Path.GetTempPath() + SelfName;
 
-                    File.Copy(SelfPath, tempPath);
+                    File.Copy(SelfPath, tempPath, true);
                     MessageBox.Show("We detected that you try to install to where this insaller is located. Installer will now restart from a temporary location. \n" +
                         "Please then continue the installation.", "Installer restart from temporary folder required");
                     cHelper.StartProcessAsAdmin(tempPath);

@@ -338,8 +338,9 @@ namespace MyLittleKaraoke_WebInstall
         }
 
         public bool IsInGameDirectory() {
+            string selffolder = Path.GetDirectoryName(SelfPath);
             //If both ultrastardx.exe and packageversion.txt exist or we are in temp dir, we can assume we're in the installdir
-            return !(SelfPath.Contains(Path.GetTempPath())) && File.Exists("ultrastardx.exe") && File.Exists("packageversion.txt");
+            return !(SelfPath.Contains(Path.GetTempPath())) && File.Exists(Path.Combine(selffolder, "ultrastardx.exe")) && File.Exists(Path.Combine(selffolder, "packageversion.txt"));
         }
 
         public bool IsProcessOpen(string name)
