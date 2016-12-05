@@ -413,6 +413,8 @@ namespace MyLittleKaraoke_WebInstall
 
                     File.Copy(SelfPath, tempPath, true);
                     cHelper.StartProcessAsAdmin(tempPath);
+                    Application.Exit();
+                    return;
                 }
 
                 if (!cHelper.IsAdministrator())
@@ -420,6 +422,7 @@ namespace MyLittleKaraoke_WebInstall
                     // Restart program as admin
                     cHelper.StartProcessAsAdmin(SelfPath);
                     Application.Exit();
+                    return;
                 }
 
                 string InstLocation = cHelper.GetInstallLocationfromRegistryKey();
