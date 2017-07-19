@@ -170,7 +170,7 @@ namespace MyLittleKaraoke_WebInstall
                 // TIMER - End.
                 Application.DoEvents();
                 if (cHelper.IsDVDInstallation())
-                    FileAddressList = cHelper.GetFileAddressesListFromLocal(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,LocalFilenameWeblist));
+                    FileAddressList = cHelper.GetFileAddressesListFromLocal(Path.Combine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "content"),LocalFilenameWeblist));
                 else
                     FileAddressList = cHelper.GetFileAddressesListFromWeb(WebFileList);
                 if (InstalledPackage.Equals("none") == false)
