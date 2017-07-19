@@ -449,7 +449,10 @@ namespace MyLittleKaraoke_WebInstall
             }
             try
             {
-                AutoUpdater.Start("https://www.mylittlekaraoke.com/store/webinst/WebInstall.xml");
+                if (!cHelper.IsDVDInstallation())
+                {
+                    AutoUpdater.Start("https://www.mylittlekaraoke.com/store/webinst/WebInstall.xml");
+                }
             }
             catch (Exception ex)
             {
