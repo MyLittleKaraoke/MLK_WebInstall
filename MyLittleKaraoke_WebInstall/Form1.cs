@@ -348,7 +348,8 @@ namespace MyLittleKaraoke_WebInstall
                     Stream inStream21;
                     if (cHelper.IsDVDInstallation())
                     {
-                        inStream21 = File.OpenRead(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, CurrentFileDLName)); 
+                        String targetPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "content");
+                        inStream21 = File.OpenRead(Path.Combine(targetPath, CurrentFileDLName)); 
                     }
                     else
                         inStream21 = File.OpenRead(Path.Combine(TempPath, CurrentFileDLName)); // TempPath
