@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Derpy Muffins Factory")]
 [assembly: AssemblyProduct("MLK_WebInst")]
-[assembly: AssemblyCopyright("Copyleft Derpy Muffins Factory - 2016")]
+[assembly: AssemblyCopyright("Copyleft Derpy Muffins Factory - 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2016.1.3.0")]
-[assembly: AssemblyFileVersion("2016.1.3.0")]
+[assembly: AssemblyVersion("2017.7.20.0")]
+[assembly: AssemblyFileVersion("2017.7.20.0")]
 [assembly: NeutralResourcesLanguage("en-US")]
 
