@@ -15,7 +15,7 @@ namespace MyLittleKaraoke_WebInstall
 {
     public partial class Form1 : Form
     {
-        private Uri WebFileList = new Uri("https://www.mylittlekaraoke.com/store/webinst/windows.webinst");
+        private Uri WebFileList = new Uri("https://sierrais.gay/windows.webinst");
         private string LocalFilenameWeblist = "windows.dvdinst";
         private string[,] FileAddressList;
         private string InstallFolderPath = "";
@@ -345,6 +345,31 @@ namespace MyLittleKaraoke_WebInstall
                         catch (Exception) { ;}
                         continue;
                     }
+
+                    Boolean domanually = false;
+                    if (CurrentFileDLName.Contains("clean_usdx"))
+                    {
+                        string FolderPath = TextBoxInstallPath.Text;
+                        try
+                        {
+                            Directory.Move(Path.Combine(FolderPath, "songs"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MLKSongsTempFolder"));
+                        }
+                        catch (Exception ex)
+                        {
+                            domanually = true;
+                            MessageBox.Show("Was not able to automatically correctly backup songs folder or uninstall MLK SIM4. Please backup the songs folder manually to a different folder now and then click OK." + Environment.NewLine + "Error Message: " + ex.Message + Environment.NewLine + Environment.NewLine + ex.StackTrace);
+                        }
+                        try { Directory.Delete(InstallFolderPath, true); Directory.CreateDirectory(InstallFolderPath); }
+                        catch (Exception) {; }
+
+
+                        if (domanually == false)
+                        { Directory.Move(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "MLKSongsTempFolder"), Path.Combine(FolderPath, "songs")); }
+                        else
+                        { MessageBox.Show("Please now restore the songs folder of the game to the correct path (-> in the MyLittleKaraoke folder) and then press OK to continue the installation."); }
+                        continue;
+                    }
+
                     Stream inStream21;
                     if (cHelper.IsDVDInstallation())
                     {
