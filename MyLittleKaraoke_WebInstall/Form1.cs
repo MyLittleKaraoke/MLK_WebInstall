@@ -15,7 +15,7 @@ namespace MyLittleKaraoke_WebInstall
 {
     public partial class Form1 : Form
     {
-        private Uri WebFileList = new Uri("https://sierrais.gay/windows.webinst");
+        private Uri WebFileList = new Uri("https://www.mylittlekaraoke.com/store/webinst/windows.webinst");
         private string LocalFilenameWeblist = "windows.dvdinst";
         private string[,] FileAddressList;
         private string InstallFolderPath = "";
