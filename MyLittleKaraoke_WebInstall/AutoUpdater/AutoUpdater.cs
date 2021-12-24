@@ -170,10 +170,7 @@ namespace MyLittleKaraoke_WebInstall
             }
             catch (Exception)
             {
-                if(CheckForUpdateEvent != null)
-                {
-                    CheckForUpdateEvent(null);
-                }
+                CheckForUpdateEvent?.Invoke(null);
                 return;
             }
 
@@ -187,10 +184,7 @@ namespace MyLittleKaraoke_WebInstall
             }
             else
             {
-                if(CheckForUpdateEvent != null)
-                {
-                    CheckForUpdateEvent(null);
-                }
+                CheckForUpdateEvent?.Invoke(null);
                 return;
             }
 
@@ -280,10 +274,7 @@ namespace MyLittleKaraoke_WebInstall
                 }
             }
 
-            if(CheckForUpdateEvent != null)
-            {
-                CheckForUpdateEvent(null);
-            }
+            CheckForUpdateEvent?.Invoke(args);
         }
 
         private static string GetURL(Uri baseUri, XmlNode xmlNode)
